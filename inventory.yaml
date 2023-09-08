@@ -1,0 +1,14 @@
+all:
+  vars: 
+    ansible_ssh_private_key_file: "{{ path_to_private_key }}"
+  hosts:
+    automationcontroller:
+      ansible_host: "{{ controller_hostname }}"
+      ansible_user: "{{ controller_username }}"
+      ansible_become_password: "{{ controller_password }}"
+      admin_username: admin
+      admin_password: "{{ aap_password }}"
+
+    zos_host:
+      ansible_host: "{{ zos_hostname }}"
+      ansible_user: ibmuser
