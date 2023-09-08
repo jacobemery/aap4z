@@ -1,0 +1,46 @@
+- hosts: "{{ automationcontroller }}"
+  become: true
+  tasks:
+
+    - name: Find the Ansible Automation Platform (AAP) pool id using subscription-manager. 
+      shell: subscription-manager list --available --all | grep "Ansible Automation Platform" -B 3 -A 6 | awk '/Pool ID/ {print $3; exit 0}'
+      changed_when: false
+      register: get_pool_id
+
+    - name: Attach the AAP license using pool id.
+      ansible.controller.license:
+        pool_id: "{{ get_pool_id.stdout }}"
+        controller_username: admin
+        controller_password: "{{ admin_password }}"
+        validate_certs: false
+
+    - name: Accept the End User License Agreement (EULA).
+      uri:
+        url: "https://{{ ansible_host }}/api/v2/config/"
+        method: POST
+        user: admin
+        password: "{{ admin_password }}"
+        body: '{ "eula_accepted": true }'
+        body_format: json
+        validate_certs: false
+        force_basic_auth: true
+      register: eula_accepted
+      until: eula_accepted is not failed
+      retries: 5
+
+    - name: Create Sample Z playbooks project.
+      ansible.controller.project:
+        controller_username: admin
+        controller_password: "{{ admin_password }}"
+        name: "z_ansible_collections_samples"
+        description: "Sample playbooks for automating IBM zSystems"
+        scm_update_on_launch: true
+        scm_type: git
+        scm_url: "https://github.com/IBM/z_ansible_collections_samples.git"
+        validate_certs: false
+
+    - name: Install Ansible collections from requirements.yaml file.
+      community.general.ansible_galaxy_install:
+        type: collection
+        requirements_file: requirements.yaml
+        dest: /usr/share/ansible/collections
