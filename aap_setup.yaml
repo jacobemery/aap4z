@@ -1,9 +1,9 @@
-- hosts: "{{ automationcontroller }}"
+- hosts: "{{ automationcontroller | default('automationcontroller') }}"
   become: true
   tasks:
 
     - name: Find the Ansible Automation Platform (AAP) pool id using subscription-manager. 
-      shell: subscription-manager list --available --all | grep "Ansible Automation Platform" -B 3 -A 6 | awk '/Pool ID/ {print $3; exit 0}'
+      shell: subscription-manager list --available --all | grep "Ansible Automation Platform" -B 3 -A 6 | awk '/Pool ID/ {print $3}'
       changed_when: false
       register: get_pool_id
 
