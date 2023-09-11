@@ -2,6 +2,17 @@
   become: true
   tasks:
 
+    - name: Create OAuth Token.
+      ansible.controller.token:
+        description: "Admin OAuth Token for Ansible Controller setup."
+        scope: ['read', 'write']
+        state: present
+        controller_username: admin
+        controller_password: "{{ admin_password }}"
+        validate_certs: false
+      when: controller_token is undefined
+      register: token
+
     - name: Find the Ansible Automation Platform (AAP) pool id using subscription-manager. 
       shell: subscription-manager list --available --all | grep "Ansible Automation Platform" -B 3 -A 6 | awk '/Pool ID/ {print $3}'
       changed_when: false
@@ -10,8 +21,9 @@
     - name: Attach the AAP license using pool id.
       ansible.controller.license:
         pool_id: "{{ get_pool_id.stdout }}"
-        controller_username: admin
-        controller_password: "{{ admin_password }}"
+        controller_oauthtoken: "{{ controller_token }}"
+        # controller_username: admin
+        # controller_password: "{{ admin_password }}"
         validate_certs: false
 
     - name: Accept the End User License Agreement (EULA).
