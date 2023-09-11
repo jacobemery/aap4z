@@ -32,7 +32,9 @@
         method: POST
         user: admin
         password: "{{ admin_password }}"
-        body: '{ "eula_accepted": true }'
+        body:
+          eula_accepted: true
+          pool_id: "{{ get_pool_id.stdout }}"
         body_format: json
         validate_certs: false
         force_basic_auth: true
