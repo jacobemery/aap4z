@@ -5,7 +5,7 @@
     - name: Create OAuth Token.
       ansible.controller.token:
         description: "Admin OAuth Token for Ansible Controller setup."
-        scope: ['read', 'write']
+        scope: write
         state: present
         controller_username: admin
         controller_password: "{{ admin_password }}"
