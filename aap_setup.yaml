@@ -22,24 +22,23 @@
       ansible.controller.license:
         pool_id: "{{ get_pool_id.stdout }}"
         controller_oauthtoken: "{{ controller_token }}"
-        # controller_username: admin
-        # controller_password: "{{ admin_password }}"
         validate_certs: false
 
-    - name: Accept the End User License Agreement (EULA).
+    - name: Attach the license using pool_id and accept eula.
       uri:
-        url: "https://{{ ansible_host }}/api/v2/config/"
+        url: "https://{{ ansible_host }}/api/v2/config/attach/"
         method: POST
-        user: admin
-        password: "{{ admin_password }}"
+        headers:
+          Authorization: "Bearer {{ controller_token.token }}"
         body:
           eula_accepted: true
-          pool_id: "{{ get_pool_id.stdout }}"
+          license_info:
+            pool_id: "{{ get_pool_id.stdout }}"
         body_format: json
         validate_certs: false
-        force_basic_auth: true
-      register: eula_accepted
-      until: eula_accepted is not failed
+        return_content: true
+      register: license
+      until: license is not failed
       retries: 5
 
     - name: Create Sample Z playbooks project.
