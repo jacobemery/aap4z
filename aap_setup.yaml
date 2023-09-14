@@ -1,59 +1,193 @@
-- hosts: "{{ automationcontroller | default('automationcontroller') }}"
+- name: Setup Ansible Automation Platform Controller server. 
+    Pre-load with projects, job templates, and credentials for demo-ing right out of the box. 
+    Includes a 'z/OS Ping' job at the end to test connectivity between the AAP Controller and z/OS host.
+  hosts: automationcontroller
   become: true
   tasks:
+    - name: Ensure AAP on Z repo is enabled.
+      community.general.rhsm_repository:    
+        name: ansible-automation-platform-2.4-for-rhel-9-s390x-rpms
 
-    - name: Create OAuth Token.
+    - name: Create OAuth Token for AAP admin tasks.
+      tags: always, token
       ansible.controller.token:
         description: "Admin OAuth Token for Ansible Controller setup."
         scope: write
         state: present
         controller_username: admin
-        controller_password: "{{ admin_password }}"
+        controller_password: "{{ ansible_become_password }}"
         validate_certs: false
       when: controller_token is undefined
       register: token
 
-    - name: Find the Ansible Automation Platform (AAP) pool id using subscription-manager. 
-      shell: subscription-manager list --available --all | grep "Ansible Automation Platform" -B 3 -A 6 | awk '/Pool ID/ {print $3}'
-      changed_when: false
-      register: get_pool_id
+    - name: Copy manifest.zip file to Controller.
+      copy:
+        src: manifest.zip
+        dest: /tmp/manifest.zip
 
-    - name: Attach the AAP license using pool id.
+    - name: Attach the AAP license using manifest file.
       ansible.controller.license:
-        pool_id: "{{ get_pool_id.stdout }}"
+        manifest: /tmp/manifest.zip
         controller_oauthtoken: "{{ controller_token }}"
         validate_certs: false
 
-    - name: Attach the license using pool_id and accept eula.
-      uri:
-        url: "https://{{ ansible_host }}/api/v2/config/attach/"
-        method: POST
-        headers:
-          Authorization: "Bearer {{ controller_token.token }}"
-        body:
-          eula_accepted: true
-          license_info:
-            pool_id: "{{ get_pool_id.stdout }}"
-        body_format: json
-        validate_certs: false
-        return_content: true
-      register: license
-      until: license is not failed
-      retries: 5
-
-    - name: Create Sample Z playbooks project.
+    - name: Create 'z_ansible_collections_samples' project.
+      tags: project, projects
       ansible.controller.project:
-        controller_username: admin
-        controller_password: "{{ admin_password }}"
+        controller_oauthtoken: "{{ controller_token }}"
         name: "z_ansible_collections_samples"
         description: "Sample playbooks for automating IBM zSystems"
+        organization: "Default"
         scm_update_on_launch: true
         scm_type: git
         scm_url: "https://github.com/IBM/z_ansible_collections_samples.git"
         validate_certs: false
 
-    - name: Install Ansible collections from requirements.yaml file.
-      community.general.ansible_galaxy_install:
-        type: collection
-        requirements_file: requirements.yaml
-        dest: /usr/share/ansible/collections
+    - name: Create 'ansible_zos' project.
+      tags: project, projects
+      ansible.controller.project:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "ansible_zos"
+        description: "Sample playbooks for automating z/OS"
+        organization: "Default"
+        scm_update_on_launch: true
+        scm_type: git
+        scm_url: "https://github.com/jacobemery/ansible_zos.git"
+        validate_certs: false
+
+    - name: Create 'aap4zos' project.
+      tags: project, projects
+      ansible.controller.project:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "aap4zos"
+        description: "Sample playbooks for automating z/OS using Ansible Automation Platform, specifically tailored for this TechZone demo."
+        organization: "Default"
+        scm_update_on_launch: true
+        scm_type: git
+        scm_url: "https://github.com/jacobemery/aap4zos.git"
+        validate_certs: false
+
+    - name: Add 'AAP z/OS' inventory.
+      tags: inventory
+      ansible.controller.inventory:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "AAP z/OS"
+        description: "AAP on Z for z/OS demo inventory"
+        organization: "Default"
+        state: present
+        validate_certs: false
+
+    - name: Fetch private key from Controller.
+      tags: inventory, hosts, credential, credentials, zos_host
+      slurp:
+        src: /root/.ssh/id_rsa
+      register: ssh_key
+
+    - name: Create Machine credential for zos_host's SSH key.
+      tags: inventory, hosts, credential, credentials, zos_host
+      ansible.controller.credential:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "z/OS Host SSH Key"
+        credential_type: Machine
+        organization: Default
+        description: "Private SSH key on Controller for connecting to z/OS host."
+        inputs:
+          ssh_key_data: "{{ ssh_key['content'] | b64decode }}"
+        validate_certs: false
+      run_once: true
+
+    - name: Create Vault credential for automationcontroller's sudo password / AAP admin password.
+      tags: inventory, hosts, credential, credentials, automationcontroller
+      ansible.controller.credential:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: AAP Controller Password
+        credential_type: Vault
+        organization: Default
+        description: "Credential for the AAP admin / automationcontroller's SSH password."
+        validate_certs: false
+        inputs:
+          vault_password: "{{ vault_controller_password }}"
+          vault_id: 'vault_controller_password'
+
+    - name: Add zos_host to 'AAP z/OS' inventory.
+      tags: inventory, hosts, zos_host
+      ansible.controller.host:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: zos_host
+        description: "z/OS server to automate against"
+        inventory: "AAP z/OS"
+        state: present
+        enabled: true
+        validate_certs: false
+        variables:
+          ansible_host: "{{ hostvars['zos_host'].ansible_host }}"
+          ansible_user: "{{ hostvars['zos_host'].ansible_user }}"
+          PYZ: "/usr/lpp/IBM/cyp/v3r11/pyz/bin/python3"
+          ZOAU: "/usr/lpp/IBM/idz/usr/lpp/IBM/zoautil"
+          environment_vars:
+            _BPXK_AUTOCVT: "ON"
+            ZOAU_HOME: "{{ hostvars['zos_host'].ZOAU }}"
+            PYTHONPATH: "{{ hostvars['zos_host'].ZOAU }}/lib"
+            LIBPATH: "{{ hostvars['zos_host'].ZOAU }}/lib:{{ hostvars['zos_host'].PYZ }}/lib:/lib:/usr/lib:."
+            PATH: "{{ hostvars['zos_host'].ZOAU }}/bin:{{ hostvars['zos_host'].PYZ }}/bin:/bin:/var/bin"
+            _CEE_RUNOPTS: "FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
+            _TAG_REDIR_ERR: "txt"
+            _TAG_REDIR_IN: "txt"
+            _TAG_REDIR_OUT: "txt"
+            LANG: "C"
+
+    - name: Add automationcontroller to 'AAP z/OS' inventory.
+      tags: inventory, hosts, automationcontroller
+      ansible.controller.host:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: automationcontroller
+        description: "This Automation Controller (localhost)"
+        inventory: "AAP z/OS"
+        state: present
+        validate_certs: false
+        enabled: true
+        variables:
+          ansible_host: "{{ ansible_host }}"
+          ansible_user: "{{ ansible_user }}"
+          admin_username: "{{ admin_username }}"
+          ansible_connection: local
+
+    - name: Create 'z/OS Ping' job template.
+      tags: job_template, template, templates
+      ansible.controller.job_template:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "z/OS Ping"
+        job_type: "run"
+        organization: "Default"
+        inventory: "AAP z/OS"
+        project: "aap4zos"
+        playbook: "zos_ping.yml"
+        credentials: "z/OS Host SSH Key"
+        state: "present"
+        validate_certs: false
+
+    - name: Launch 'z/OS Ping' job to test connectivity between z/OS host and AAP Controller. 
+      tags: job, jobs, zos_ping
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS Ping"
+        validate_certs: false
+      register: job
+
+    - name: Print 'z/OS Ping' job status and ID.
+      tags: job, jobs, zos_ping
+      debug:
+        var: job
+
+    - name: Wait for 'z/OS Ping' job to complete, max 120s.
+      tags: job, jobs, zos_ping
+      ansible.controller.job_wait:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_id: "{{ job.id | int }}"
+        timeout: 120
+        validate_certs: false
+
+    - name: Ansible Automation Platform Controller and z/OS Host setup is complete, get automating!
+      tags: setup_complete
+      debug:
+        msg: "Congratulations!"
