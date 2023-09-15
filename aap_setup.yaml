@@ -122,8 +122,9 @@
         variables:
           ansible_host: "{{ hostvars['zos_host'].ansible_host }}"
           ansible_user: "{{ hostvars['zos_host'].ansible_user }}"
-          PYZ: "/usr/lpp/IBM/cyp/v3r11/pyz/bin/python3"
-          ZOAU: "/usr/lpp/IBM/idz/usr/lpp/IBM/zoautil"
+          PYZ: "{{ hostvars['zos_host'].PYZ }}"
+          ZOAU: "{{ hostvars['zos_host'].ZOAU }}"
+          ansible_python_interpreter: "{{ hostvars['zos_host'].PYZ }}/bin/python3"
           environment_vars:
             _BPXK_AUTOCVT: "ON"
             ZOAU_HOME: "{{ hostvars['zos_host'].ZOAU }}"
@@ -135,6 +136,7 @@
             _TAG_REDIR_IN: "txt"
             _TAG_REDIR_OUT: "txt"
             LANG: "C"
+            PYTHONSTDINENCODING: "cp1047"
 
     - name: Add automationcontroller to 'AAP z/OS' inventory.
       tags: inventory, hosts, automationcontroller
@@ -153,7 +155,7 @@
           ansible_connection: local
 
     - name: Create 'z/OS Ping' job template.
-      tags: job_template, template, templates
+      tags: job_template, template, templates, zos_ping
       ansible.controller.job_template:
         controller_oauthtoken: "{{ controller_token }}"
         name: "z/OS Ping"
@@ -162,6 +164,20 @@
         inventory: "AAP z/OS"
         project: "aap4zos"
         playbook: "zos_ping.yml"
+        credentials: "z/OS Host SSH Key"
+        state: "present"
+        validate_certs: false
+
+    - name: Create 'z/OS Gather Facts' job template.
+      tags: job_template, template, templates, zos_gather_facts
+      ansible.controller.job_template:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "z/OS Gather Facts"
+        job_type: "run"
+        organization: "Default"
+        inventory: "AAP z/OS"
+        project: "aap4zos"
+        playbook: "zos_gather_facts.yml"
         credentials: "z/OS Host SSH Key"
         state: "present"
         validate_certs: false
