@@ -128,7 +128,6 @@
           environment_vars:
             _BPXK_AUTOCVT: "ON"
             ZOAU_HOME: "{{ hostvars['zos_host'].ZOAU }}"
-            PYTHONPATH: "{{ hostvars['zos_host'].ZOAU }}/lib"
             LIBPATH: "{{ hostvars['zos_host'].ZOAU }}/lib:{{ hostvars['zos_host'].PYZ }}/lib:/lib:/usr/lib:."
             PATH: "{{ hostvars['zos_host'].ZOAU }}/bin:{{ hostvars['zos_host'].PYZ }}/bin:/bin:/var/bin"
             _CEE_RUNOPTS: "FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
