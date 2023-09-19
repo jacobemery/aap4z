@@ -269,6 +269,44 @@
         timeout: 120
         validate_certs: false
 
+    - name: Create 'z/OS Create Data Set' job template.
+      tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
+      ansible.controller.job_template:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "z/OS Create Data Set"
+        job_type: "run"
+        organization: "Default"
+        inventory: "AAP z/OS"
+        project: "aap4zos"
+        playbook: "zos_concepts/data_sets/data_set_basics/create_data_set.yml"
+        credentials: "z/OS Host SSH Key"
+        execution_environment: "aap4zos EE"
+        state: "present"
+        validate_certs: false
+        survey_enabled:
+        survey_spec: "{{ lookup('file', 'create_data_set_survey_spec.json') }}"
+
+    - name: Launch 'z/OS Create Data Set' job to collect important z/OS information. 
+      tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS Create Data Set"
+        validate_certs: false
+      register: zos_create_data_set_job
+
+    - name: Print 'z/OS Create Data Set' job status and ID.
+      tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
+      debug:
+        var: zos_create_data_set_job
+
+    - name: Wait for 'z/OS Create Data Set' job to complete, max 120s.
+      tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
+      ansible.controller.job_wait:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_id: "{{ zos_create_data_set_job.id | int }}"
+        timeout: 120
+        validate_certs: false
+
     - name: Ansible Automation Platform Controller and z/OS Host setup is complete, get automating!
       tags: setup_complete
       debug:

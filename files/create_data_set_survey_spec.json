@@ -1,0 +1,72 @@
+{
+    "name": "z/OS Create Data Set",
+    "description": "Create z/OS data set with variable name, type, size, etc.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Name",
+        "question_description": "The name of the data set being managed.",
+        "variable": "ds_name",
+        "choices": "",
+        "min": 5,
+        "max": 44,
+        "required": true,
+        "default": "IBMUSER.ANSIB.DATASET"
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Type",
+        "question_description": "The data set type to be used when creating a data set. MEMBER expects to be used with an existing partitioned data set.",
+        "variable": "ds_type",
+        "choices": ["KSDS", "ESDS", "RRDS", "LDS", "SEQ", "PDS", "PDSE", "LIBRARY", "BASIC", "LARGE", "MEMBER", "HFS", "ZFS"],
+        "min": "",
+        "max": "",
+        "required": false,
+        "default": "PDS"
+        },
+        {
+        "type": "integer",
+        "question_name": "Primary Space",
+        "question_description": "The amount of primary space to allocate to the data set. The unit of space used is set using 'Space Type'.",
+        "variable": "ds_space_primary",
+        "choices": "",
+        "min": 1,
+        "max": 65535,
+        "required": false,
+        "default": "5"
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Space Type",
+        "question_description": "The unit of measurement to use when defining primary and secondary space.",
+        "variable": "ds_space_type",
+        "choices": ["K", "M", "G", "CYL", "TRK"],
+        "min": "",
+        "max": "",
+        "required": false,
+        "default": "M"
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Record Format",
+        "question_description": "The format of the data set. When type=KSDS, type=ESDS, type=RRDS, type=LDS or type=ZFS then record_format=None, these types do not have a default record_format.",
+        "variable": "ds_space_type",
+        "choices": ["FB", "VB", "FBA", "VBA", "U", "F"],
+        "min": "",
+        "max": "",
+        "required": false,
+        "default": "FB"
+        },
+        {
+        "type": "integer",
+        "question_name": "Record Length",
+        "question_description": "The length, in bytes, of each record in the data set. For variable data sets, the length must include the 4-byte prefix area. Defaults vary depending on format: If FB/FBA 80, if VB/VBA 137, if U 0.",
+        "variable": "ds_space_primary",
+        "choices": "",
+        "min": 1,
+        "max": 32764,
+        "required": false,
+        "default": "80"
+        }
+    ]
+}
