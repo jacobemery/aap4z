@@ -248,7 +248,7 @@
         state: "present"
         validate_certs: false
 
-    - name: Launch 'z/OS Data Set - Basics' job to collect important z/OS information. 
+    - name: Launch 'z/OS Data Set - Basics' job. 
       tags: job, jobs, zos_data_set_basics, data_set, data_set_basics
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
@@ -287,7 +287,7 @@
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'create_data_set_survey_spec.json') }}"
 
-    - name: Launch 'z/OS Data Set - Create' job to collect important z/OS information. 
+    - name: Launch 'z/OS Data Set - Create' job. 
       tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
@@ -326,7 +326,7 @@
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'delete_data_set_survey_spec.json') }}"
 
-    - name: Launch 'z/OS Data Set - Delete' job to collect important z/OS information. 
+    - name: Launch 'z/OS Data Set - Delete' job. 
       tags: job_template, template, templates, zos_delete_data_set, delete_data_set, data_set
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
@@ -360,12 +360,11 @@
         credentials: "z/OS Host SSH Key"
         execution_environment: "aap4zos EE"
         state: "present"
-        verbosity: 1
         validate_certs: false
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'fetch_data_set_survey_spec.json') }}"
 
-    - name: Launch 'z/OS Data Set - Fetch' job to collect important z/OS information. 
+    - name: Launch 'z/OS Data Set - Fetch' job. 
       tags: job_template, template, templates, zos_fetch_data_set, fetch_data_set, data_set
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
