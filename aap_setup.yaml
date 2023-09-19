@@ -153,6 +153,14 @@
           admin_username: "{{ admin_username }}"
           ansible_connection: local
 
+    - name: Add EE to the controller instance
+      tags: ee, execution-environment
+      ansible.controller.execution_environment:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "aap4zos EE"
+        image: quay.io/jacob_emery/aap4zos-ee
+        validate_certs: false
+
     - name: Create 'z/OS Ping' job template.
       tags: job_template, template, templates, zos_ping
       ansible.controller.job_template:
@@ -164,7 +172,29 @@
         project: "aap4zos"
         playbook: "zos_ping.yml"
         credentials: "z/OS Host SSH Key"
+        #execution_environment: "aap4zos EE"
         state: "present"
+        validate_certs: false
+
+    - name: Launch 'z/OS Ping' job to test connectivity between z/OS host and AAP Controller. 
+      tags: job, jobs, zos_ping
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS Ping"
+        validate_certs: false
+      register: zos_ping_job
+
+    - name: Print 'z/OS Ping' job status and ID.
+      tags: job, jobs, zos_ping
+      debug:
+        var: zos_ping_job
+
+    - name: Wait for 'z/OS Ping' job to complete, max 120s.
+      tags: job, jobs, zos_ping
+      ansible.controller.job_wait:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_id: "{{ zos_ping_job.id | int }}"
+        timeout: 120
         validate_certs: false
 
     - name: Create 'z/OS Gather Facts' job template.
@@ -178,27 +208,28 @@
         project: "aap4zos"
         playbook: "zos_gather_facts.yml"
         credentials: "z/OS Host SSH Key"
+        execution_environment: "aap4zos EE"
         state: "present"
         validate_certs: false
 
-    - name: Launch 'z/OS Ping' job to test connectivity between z/OS host and AAP Controller. 
-      tags: job, jobs, zos_ping
+    - name: Launch 'z/OS Gather Facts' job to collect important z/OS information. 
+      tags: job, jobs, zos_gather_facts
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
-        job_template: "z/OS Ping"
+        job_template: "z/OS Gather Facts"
         validate_certs: false
-      register: job
+      register: zos_gather_facts_job
 
-    - name: Print 'z/OS Ping' job status and ID.
-      tags: job, jobs, zos_ping
+    - name: Print 'z/OS Gather Facts' job status and ID.
+      tags: job, jobs, zos_gather_facts
       debug:
-        var: job
+        var: zos_gather_facts_job
 
-    - name: Wait for 'z/OS Ping' job to complete, max 120s.
-      tags: job, jobs, zos_ping
+    - name: Wait for 'z/OS Gather Facts' job to complete, max 120s.
+      tags: job, jobs, zos_gather_facts
       ansible.controller.job_wait:
         controller_oauthtoken: "{{ controller_token }}"
-        job_id: "{{ job.id | int }}"
+        job_id: "{{ zos_gather_facts_job.id | int }}"
         timeout: 120
         validate_certs: false
 
