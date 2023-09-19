@@ -12,6 +12,14 @@
         },
         {
         "type": "text",
+        "question_name": "Source File",
+        "question_description": "The name of the file to populate the data set with from the GitHub repository from the folder zos_concepts/data_sets/data_set_basics/files/.",
+        "variable": "src_file",
+        "required": false,
+        "default": "HELLO.jcl"
+        },
+        {
+        "type": "text",
         "question_name": "Destination Path",
         "question_description": "The absolute path on the Linux Ansible Controller's side to copy the data set to.",
         "variable": "dest_path",
