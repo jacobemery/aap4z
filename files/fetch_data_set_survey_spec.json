@@ -1,0 +1,22 @@
+{
+    "name": "z/OS Delete Data Set",
+    "description": "Delete z/OS data set with variable name.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Data Set Name",
+        "question_description": "The name of the z/OS data set to fetch.",
+        "variable": "ds_name",
+        "required": false,
+        "default": "IBMUSER.ANSIB.DATASET"
+        },
+        {
+        "type": "text",
+        "question_name": "Destination Path",
+        "question_description": "The absolute path on the Linux Ansible Controller's side to copy the data set to.",
+        "variable": "dest_path",
+        "required": false,
+        "default": "/tmp/data_set"
+        }
+    ]
+}
