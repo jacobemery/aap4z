@@ -8,8 +8,6 @@
         "question_description": "The name of the data set being managed.",
         "variable": "ds_name",
         "choices": "",
-        "min": 5,
-        "max": 44,
         "required": true,
         "default": "IBMUSER.ANSIB.DATASET"
         },
@@ -19,8 +17,6 @@
         "question_description": "The data set type to be used when creating a data set. MEMBER expects to be used with an existing partitioned data set.",
         "variable": "ds_type",
         "choices": ["KSDS", "ESDS", "RRDS", "LDS", "SEQ", "PDS", "PDSE", "LIBRARY", "BASIC", "LARGE", "MEMBER", "HFS", "ZFS"],
-        "min": "",
-        "max": "",
         "required": false,
         "default": "PDS"
         },
@@ -33,7 +29,7 @@
         "min": 1,
         "max": 65535,
         "required": false,
-        "default": "5"
+        "default": 5
         },
         {
         "type": "multiplechoice",
@@ -41,8 +37,6 @@
         "question_description": "The unit of measurement to use when defining primary and secondary space.",
         "variable": "ds_space_type",
         "choices": ["K", "M", "G", "CYL", "TRK"],
-        "min": "",
-        "max": "",
         "required": false,
         "default": "M"
         },
@@ -50,10 +44,8 @@
         "type": "multiplechoice",
         "question_name": "Record Format",
         "question_description": "The format of the data set. When type=KSDS, type=ESDS, type=RRDS, type=LDS or type=ZFS then record_format=None, these types do not have a default record_format.",
-        "variable": "ds_space_type",
+        "variable": "ds_record_format",
         "choices": ["FB", "VB", "FBA", "VBA", "U", "F"],
-        "min": "",
-        "max": "",
         "required": false,
         "default": "FB"
         },
@@ -61,12 +53,12 @@
         "type": "integer",
         "question_name": "Record Length",
         "question_description": "The length, in bytes, of each record in the data set. For variable data sets, the length must include the 4-byte prefix area. Defaults vary depending on format: If FB/FBA 80, if VB/VBA 137, if U 0.",
-        "variable": "ds_space_primary",
+        "variable": "ds_record_length",
         "choices": "",
         "min": 1,
         "max": 32764,
         "required": false,
-        "default": "80"
+        "default": 80
         }
     ]
 }
