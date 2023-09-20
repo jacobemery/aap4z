@@ -9,13 +9,18 @@
       package:
         name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit']
 
+
+    - name: Check if cockpit-navigator is already installed
+      tags: cockpit, test
+      command: rpm -q cockpit-navigator
+      register: rpm_check
+      failed_when: rpm_check.rc > 1
+      changed_when: false
+
     - name: Install cockpit-navigator.
-      tags: cockpit
-      dnf: 
-        name: 'https://github.com/45Drives/cockpit-navigator/releases/download/v0.5.10/cockpit-navigator-0.5.10-1.el8.noarch.rpm'
-        state: present
-        disable_gpg_check: true
-        install_weak_deps: false
+      tags: cockpit, test
+      command: "rpm -i --nodeps https://github.com/45Drives/cockpit-navigator/releases/download/v0.5.10/cockpit-navigator-0.5.10-1.el8.noarch.rpm"
+      when: rpm_check.rc == 1
 
     - name: Enable cockpit.
       tags: cockpit
