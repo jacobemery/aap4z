@@ -4,6 +4,23 @@
   hosts: automationcontroller
   become: true
   tasks:
+    - name: Install packages for cockpit.
+      tags: cockpit
+      package:
+        name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit']
+
+    - name: Install cockpit-navigator.
+      tags: cockpit
+      dnf: 
+        name: 'https://github.com/45Drives/cockpit-navigator/releases/download/v0.5.10/cockpit-navigator-0.5.10-1.el8.noarch.rpm'
+        state: present
+        disable_gpg_check: true
+        install_weak_deps: false
+
+    - name: Enable cockpit.
+      tags: cockpit
+      command: "systemctl enable --now cockpit.socket"
+
     - name: Ensure AAP on Z repo is enabled.
       community.general.rhsm_repository:    
         name: ansible-automation-platform-2.4-for-rhel-9-s390x-rpms
