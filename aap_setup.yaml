@@ -22,7 +22,7 @@
 
     - name: Copy manifest.zip file to Controller.
       copy:
-        src: manifest.zip
+        src: "{{ manifest_file }}"
         dest: /tmp/manifest.zip
 
     - name: Attach the AAP license using manifest file.
@@ -184,19 +184,6 @@
         validate_certs: false
       register: zos_ping_job
 
-    - name: Print 'z/OS Ping' job status and ID.
-      tags: job, jobs, zos_ping
-      debug:
-        var: zos_ping_job
-
-    - name: Wait for 'z/OS Ping' job to complete, max 120s.
-      tags: job, jobs, zos_ping
-      ansible.controller.job_wait:
-        controller_oauthtoken: "{{ controller_token }}"
-        job_id: "{{ zos_ping_job.id | int }}"
-        timeout: 120
-        validate_certs: false
-
     - name: Create 'z/OS Gather Facts' job template.
       tags: job_template, template, templates, zos_gather_facts
       ansible.controller.job_template:
@@ -219,19 +206,6 @@
         job_template: "z/OS Gather Facts"
         validate_certs: false
       register: zos_gather_facts_job
-
-    - name: Print 'z/OS Gather Facts' job status and ID.
-      tags: job, jobs, zos_gather_facts
-      debug:
-        var: zos_gather_facts_job
-
-    - name: Wait for 'z/OS Gather Facts' job to complete, max 120s.
-      tags: job, jobs, zos_gather_facts
-      ansible.controller.job_wait:
-        controller_oauthtoken: "{{ controller_token }}"
-        job_id: "{{ zos_gather_facts_job.id | int }}"
-        timeout: 120
-        validate_certs: false
 
     - name: Create 'z/OS Data Set - Basics' job template.
       tags: job_template, template, templates, zos_data_set_basics, data_set, data_set_basics
@@ -256,19 +230,6 @@
         validate_certs: false
       register: zos_data_set_basics_job
 
-    - name: Print 'z/OS Data Set - Basics' job status and ID.
-      tags: job, jobs, zos_data_set_basics, data_set, data_set_basics
-      debug:
-        var: zos_data_set_basics_job
-
-    - name: Wait for 'z/OS Data Set - Basics' job to complete, max 120s.
-      tags: job, jobs, zos_data_set_basics, data_set, data_set_basics
-      ansible.controller.job_wait:
-        controller_oauthtoken: "{{ controller_token }}"
-        job_id: "{{ zos_data_set_basics_job.id | int }}"
-        timeout: 120
-        validate_certs: false
-
     - name: Create 'z/OS Data Set - Create' job template.
       tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
       ansible.controller.job_template:
@@ -288,25 +249,12 @@
         survey_spec: "{{ lookup('file', 'create_data_set_survey_spec.json') }}"
 
     - name: Launch 'z/OS Data Set - Create' job. 
-      tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
+      tags: job, jobs, zos_create_data_set, create_data_set, data_set
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
         job_template: "z/OS Data Set - Create"
         validate_certs: false
       register: zos_create_data_set_job
-
-    - name: Print 'z/OS Data Set - Create' job status and ID.
-      tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
-      debug:
-        var: zos_create_data_set_job
-
-    - name: Wait for 'z/OS Data Set - Create' job to complete, max 120s.
-      tags: job_template, template, templates, zos_create_data_set, create_data_set, data_set
-      ansible.controller.job_wait:
-        controller_oauthtoken: "{{ controller_token }}"
-        job_id: "{{ zos_create_data_set_job.id | int }}"
-        timeout: 120
-        validate_certs: false
 
     - name: Create 'z/OS Data Set - Delete' job template.
       tags: job_template, template, templates, zos_delete_data_set, delete_data_set, data_set
@@ -327,25 +275,12 @@
         survey_spec: "{{ lookup('file', 'delete_data_set_survey_spec.json') }}"
 
     - name: Launch 'z/OS Data Set - Delete' job. 
-      tags: job_template, template, templates, zos_delete_data_set, delete_data_set, data_set
+      tags: job, jobs, zos_delete_data_set, delete_data_set, data_set
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
         job_template: "z/OS Data Set - Delete"
         validate_certs: false
       register: zos_delete_data_set_job
-
-    - name: Print 'z/OS Data Set - Delete' job status and ID.
-      tags: job_template, template, templates, zos_delete_data_set, delete_data_set, data_set
-      debug:
-        var: zos_delete_data_set_job
-
-    - name: Wait for 'z/OS Data Set - Delete' job to complete, max 120s.
-      tags: job_template, template, templates, zos_delete_data_set, delete_data_set, data_set
-      ansible.controller.job_wait:
-        controller_oauthtoken: "{{ controller_token }}"
-        job_id: "{{ zos_delete_data_set_job.id | int }}"
-        timeout: 120
-        validate_certs: false
 
     - name: Create 'z/OS Data Set - Fetch' job template.
       tags: job_template, template, templates, zos_fetch_data_set, fetch_data_set, data_set
@@ -365,25 +300,59 @@
         survey_spec: "{{ lookup('file', 'fetch_data_set_survey_spec.json') }}"
 
     - name: Launch 'z/OS Data Set - Fetch' job. 
-      tags: job_template, template, templates, zos_fetch_data_set, fetch_data_set, data_set
+      tags: job, jobs, zos_fetch_data_set, fetch_data_set, data_set
       ansible.controller.job_launch:
         controller_oauthtoken: "{{ controller_token }}"
         job_template: "z/OS Data Set - Fetch"
         validate_certs: false
       register: zos_fetch_data_set_job
 
-    - name: Print 'z/OS Data Set - Fetch' job status and ID.
-      tags: job_template, template, templates, zos_fetch_data_set, fetch_data_set, data_set
-      debug:
-        var: zos_fetch_data_set_job
+    - name: Wait for 120 seconds to let all jobs finish.
+      tags: job, jobs, check
+      pause:
+        seconds: 120
 
-    - name: Wait for 'z/OS Data Set - Fetch' job to complete, max 120s.
-      tags: job_template, template, templates, zos_fetch_data_set, fetch_data_set, data_set
-      ansible.controller.job_wait:
+    - name: Check on all launched jobs.
+      tags: job, jobs, check
+      ansible.controller.job_list:
         controller_oauthtoken: "{{ controller_token }}"
-        job_id: "{{ zos_fetch_data_set_job.id | int }}"
-        timeout: 120
+        all_pages: true
+        query: {"job_type": "run"}
         validate_certs: false
+      register: jobs_check
+
+    - name: Define list of task names to find.
+      tags: job, jobs, check
+      set_fact:
+        task_names_to_find: ['z/OS Ping', 'z/OS Gather Facts', 'z/OS Data Set - Basics', 'z/OS Data Set - Create', 'z/OS Data Set - Delete', 'z/OS Data Set - Fetch']
+        collected_job_status: {}
+        failed_tasks: []
+
+    - name: Loop through jobs to find status by task name.
+      tags: job, jobs, check
+      set_fact:
+        collected_job_status: "{{ collected_job_status | combine({item.name: item.status}) }}"
+      loop: "{{ jobs_check.results }}"
+      loop_control:
+        label: "Processing"
+      when: item.name in task_names_to_find
+
+    - name: Print collected_job_status.
+      tags: job, jobs, check
+      debug:
+        var: collected_job_status
+
+    - name: Populate list of failed tasks
+      tags: job, jobs, check
+      set_fact:
+        failed_tasks: "{{ collected_job_status | dict2items | selectattr('value', 'equalto', 'failed') | map(attribute='key') | list }}"
+      no_log: true
+
+    - name: Print failed tasks.
+      tags: job, jobs, check
+      debug:
+        msg: "The following tasks failed: {{ failed_tasks }}"
+      when: failed_tasks | length > 0
 
     - name: Ansible Automation Platform Controller and z/OS Host setup is complete, get automating!
       tags: setup_complete
