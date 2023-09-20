@@ -8,7 +8,7 @@
         "question_description": "The name of the data set being managed.",
         "variable": "ds_name",
         "choices": "",
-        "required": true,
+        "required": false,
         "default": "IBMUSER.ANSIB.DATASET"
         },
         {
