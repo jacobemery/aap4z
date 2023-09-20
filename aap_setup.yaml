@@ -9,7 +9,6 @@
       package:
         name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit']
 
-
     - name: Check if cockpit-navigator is already installed
       tags: cockpit, test
       command: rpm -q cockpit-navigator
