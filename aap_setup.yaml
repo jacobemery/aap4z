@@ -194,7 +194,7 @@
         project: "aap4zos"
         playbook: "zos_ping.yml"
         credentials: "z/OS Host SSH Key"
-        #execution_environment: "aap4zos EE"
+        execution_environment: "aap4zos EE"
         state: "present"
         validate_certs: false
 
