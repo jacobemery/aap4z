@@ -50,6 +50,8 @@ PYZ: "/usr/lpp/IBM/cyp/v3r11/pyz"
 # The path to root of ZOAU installation
 ZOAU: "/usr/lpp/IBM/zoautil"
 
+ansible_python_interpreter: "{{ PYZ }}/bin/python3"
+
 # You should not need to change environment_vars
 environment_vars:
   _BPXK_AUTOCVT: "ON"
