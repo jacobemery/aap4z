@@ -180,6 +180,7 @@
         controller_oauthtoken: "{{ controller_token }}"
         name: "aap4zos EE"
         image: quay.io/jacob_emery/aap4zos-ee
+        pull: always
         validate_certs: false
 
     - name: Create 'z/OS Ping' job template.
