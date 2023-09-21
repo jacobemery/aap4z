@@ -8,7 +8,7 @@
         "question_description": "The name of the z/OS data set to fetch.",
         "variable": "ds_name",
         "required": false,
-        "default": "IBMUSER.ANSIB.DATASET"
+        "default": "IBMUSER.FETCH.DATASET"
         },
         {
         "type": "text",
