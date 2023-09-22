@@ -1,6 +1,6 @@
 {
-    "name": "z/OS Delete Data Set",
-    "description": "Delete z/OS data set with variable name.",
+    "name": "z/OS Fetch Data Set",
+    "description": "Fetch z/OS data set with variable data set name, source file, and destination path.",
     "spec": [
         {
         "type": "text",
