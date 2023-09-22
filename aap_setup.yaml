@@ -232,7 +232,7 @@
       register: zos_gather_facts_job
 
     - name: Create 'z/OS Job Submit' job template.
-      tags: job, jobs, zos_job_submit, job_submit
+      tags: job_template, template, zos_job_submit, job_submit
       ansible.controller.job_template:
         controller_oauthtoken: "{{ controller_token }}"
         name: "z/OS Job Submit"
@@ -258,7 +258,7 @@
       register: zos_job_submit_job
 
     - name: Create 'z/OS Jobs - Submit, Query, Retrieve' job template.
-      tags: job, jobs, zos_job_submit_query_retrieve, job_submit_query_retrieve
+      tags: job_template, template, zos_job_submit_query_retrieve, job_submit_query_retrieve
       ansible.controller.job_template:
         controller_oauthtoken: "{{ controller_token }}"
         name: "z/OS Jobs - Submit, Query, Retrieve"
