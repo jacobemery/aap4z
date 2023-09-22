@@ -385,6 +385,32 @@
         validate_certs: false
       register: zos_fetch_data_set_job
 
+    - name: Create 'z/OS TSO Command' job template.
+      tags: job_template, template, templates, zos_tso_command, tso_command
+      ansible.controller.job_template:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "z/OS TSO Command"
+        description: "A playbook to execute a variable TSO command on the target z/OS system."
+        job_type: "run"
+        organization: "Default"
+        inventory: "AAP z/OS"
+        project: "aap4zos"
+        playbook: "zos_tso_command.yml"
+        credentials: "z/OS Host SSH Key"
+        execution_environment: "aap4zos EE"
+        state: "present"
+        validate_certs: false
+        survey_enabled: true
+        survey_spec: "{{ lookup('file', 'zos_tso_command_survey_spec.json') }}"
+
+    - name: Launch 'z/OS TSO Command' job. 
+      tags: job, jobs, zos_tso_command, tso_command
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS TSO Command"
+        validate_certs: false
+      register: zos_tso_command_job
+
     - name: Wait for 120 seconds to let all jobs finish.
       tags: job, jobs, check
       pause:
@@ -402,7 +428,16 @@
     - name: Define list of task names to find.
       tags: job, jobs, check
       set_fact:
-        task_names_to_find: ['z/OS Ping', 'z/OS Gather Facts', 'z/OS Job Submit', 'z/OS Jobs - Submit, Query, Retrieve', 'z/OS Data Set - Basics', 'z/OS Data Set - Create', 'z/OS Data Set - Delete', 'z/OS Data Set - Fetch']
+        task_names_to_find:
+          - 'z/OS Ping'
+          - 'z/OS Gather Facts'
+          - 'z/OS Job Submit'
+          - 'z/OS Jobs - Submit, Query, Retrieve'
+          - 'z/OS Data Set - Basics'
+          - 'z/OS Data Set - Create'
+          - 'z/OS Data Set - Delete'
+          - 'z/OS Data Set - Fetch'
+          - 'z/OS TSO Command'
         collected_job_status: {}
         failed_tasks: []
 
