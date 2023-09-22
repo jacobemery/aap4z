@@ -21,6 +21,15 @@
       command: "rpm -i --nodeps https://github.com/45Drives/cockpit-navigator/releases/download/v0.5.10/cockpit-navigator-0.5.10-1.el8.noarch.rpm"
       when: rpm_check.rc == 1
 
+    - name: Assemble and stage certificate for cockpit.
+      tags: cockpit, test
+      assemble:
+        src: /root/certificates
+        dest: /etc/cockpit/ws-certs.d/cockpit.cert
+        owner: root
+        group: root
+        mode: '0600'
+
     - name: Enable cockpit.
       tags: cockpit
       command: "systemctl enable --now cockpit.socket"
