@@ -1,0 +1,15 @@
+{
+    "name": "z/OS Job Submit",
+    "description": "A playbook showing a simple job submission from variable JCL file on the controller.",
+    "spec": [
+        {
+        "type": "multiplechoice",
+        "question_name": "JCL File",
+        "question_description": "The name of the example JCL file (no extension) to submit: from options HELLO (default), ALLOCATE_PDS, or INVALID_PDS (to test failure).",
+        "variable": "jcl",
+        "choices": [ "HELLO", "ALLOCATE_PDS", "INVALID_PDS" ],
+        "required": false,
+        "default": "HELLO"
+        }
+    ]
+}
