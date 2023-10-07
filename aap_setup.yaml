@@ -1,6 +1,5 @@
 - name: Setup Ansible Automation Platform Controller server. 
     Pre-load with projects, job templates, and credentials for demo-ing right out of the box. 
-    Includes launching jobs at the end to test use cases.
   hosts: automationcontroller
   become: true
   tasks:
