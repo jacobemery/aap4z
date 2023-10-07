@@ -224,6 +224,14 @@
         state: "present"
         validate_certs: false
 
+    - name: Delete 'Demo Job Template' job template.
+      tags: job_template, template, delete, demo_job_template
+      ansible.controller.job_template:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "Demo Job Template"
+        state: "absent"
+        validate_certs: false
+
     - name: Create 'z/OS Job Submit' job template.
       tags: job_template, template, zos_job_submit, job_submit
       ansible.controller.job_template:
