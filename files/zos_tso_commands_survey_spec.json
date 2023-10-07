@@ -1,0 +1,14 @@
+{
+    "name": "z/OS TSO Command(s)",
+    "description": "Execute one or multiple TSO commands on the target z/OS system. Provide separate commands on their own lines, as shown in the default example.",
+    "spec": [
+        {
+        "type": "textarea",
+        "question_name": "Command(s)",
+        "question_description": "The TSO command(s) to execute on the z/OS host. Provide separate commands on their own lines, as shown in the default example.",
+        "variable": "zos_tso_command",
+        "required": false,
+        "default": "LISTCAT ENT('SYS1.PARMLIB') ALL\nLISTUSER IBMUSER"
+        }
+    ]
+}

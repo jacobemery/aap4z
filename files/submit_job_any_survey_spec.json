@@ -1,0 +1,20 @@
+{
+    "name": "z/OS Job Submit Any",
+    "description": "A playbook for submitting any JCL directly to the z/OS host from AAP survey contents.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Job Name",
+        "question_description": "A name for the job to submit.",
+        "variable": "job_name",
+        "required": true
+        },
+        {
+        "type": "textarea",
+        "question_name": "Job Contents",
+        "question_description": "JCL contents of the job to submit.",
+        "variable": "job_contents",
+        "required": true
+        }
+    ]
+}

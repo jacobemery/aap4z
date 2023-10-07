@@ -1,0 +1,32 @@
+{
+    "name": "z/OS Operator Command",
+    "description": "Execute an operator command on the target z/OS system.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Command",
+        "question_description": "The operator command to execute on the z/OS host.",
+        "variable": "zos_operator_command_survey",
+        "required": false,
+        "default": "D M=CPU"
+        },
+        {
+        "type": "integer",
+        "question_name": "Wait Time (seconds)",
+        "question_description": "The number of seconds to wait after submitting the command to wait before querying for results.",
+        "variable": "wait_time_s_survey",
+        "min": 0,
+        "required": false,
+        "default": 1
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Verbose",
+        "question_description": "Whether or not the output should be verbose, including diagnostic messages that describes the commands execution, options, buffer and response size.",
+        "variable": "verbose_survey",
+        "choices": ["true", "false"],
+        "required": false,
+        "default": "false"
+        }
+    ]
+}

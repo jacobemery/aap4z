@@ -1,0 +1,77 @@
+{
+    "name": "z/OS Certs - Create USER Cert",
+    "description": "This playbook creates a USER certificate using zos_tso_command module.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Owner ID",
+        "question_description": "Specifies the user ID that will own this certificate.",
+        "variable": "owner_id_survey",
+        "required": false,
+        "default": "IBMUSER"
+        },
+        {
+        "type": "text",
+        "question_name": "Certificate Label",
+        "question_description": "A human-readable tag that allows for easy selection and management of the certificate.",
+        "variable": "cert_label_survey",
+        "required": false,
+        "default": "TEST USER"
+        },
+        {
+        "type": "text",
+        "question_name": "Sign Label",
+        "question_description": "The label of the Certificate Authority (CA) to sign this certificate with.",
+        "variable": "sign_label_survey",
+        "required": false,
+        "default": "TEST CA"
+        },
+        {
+        "type": "text",
+        "question_name": "Organizational Unit",
+        "question_description": "The unit or department within the larger organization that is responsible for the certificate.",
+        "variable": "ou_survey",
+        "required": false,
+        "default": "ANSIBLE CORE"
+        },
+        {
+        "type": "text",
+        "question_name": "Common Name",
+        "question_description": "The fully qualified domain name (FQDN) for which the certificate will be issued. If left blank, it will be set to the z/OS server's FQDN.",
+        "variable": "cn_survey",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Country",
+        "question_description": "The two-letter ISO country code for the country where the organization or entity that the certificate represents is legally registered.",
+        "variable": "country_survey",
+        "required": false,
+        "default": "US"
+        },
+        {
+        "type": "text",
+        "question_name": "Keyring",
+        "question_description": "Name of the secure container that holds digital certificates and their associated private keys.",
+        "variable": "keyring_survey",
+        "required": false,
+        "default": "SharedRing1"
+        },
+        {
+        "type": "text",
+        "question_name": "Expiration Date",
+        "question_description": "The date (in YYYY-MM-DD format) until which the digital certificate is valid.",
+        "variable": "expiry_date_survey",
+        "required": false,
+        "default": "2030-01-01"
+        },
+        {
+        "type": "text",
+        "question_name": "Check Name",
+        "question_description": "The name of the check that will be performed for validation.",
+        "variable": "check_name_survey",
+        "required": false,
+        "default": "IBMRACF,RACF_CERTIFICATE_EXPIRATION"
+        }
+    ]
+}

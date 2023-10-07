@@ -1,0 +1,39 @@
+{
+    "name": "z/OS Certs - Delete Cert",
+    "description": "This playbook deletes a certificate using zos_tso_command module.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Owner ID",
+        "question_description": "Specifies the user ID that owns this certificate.",
+        "variable": "owner_id_survey",
+        "required": false,
+        "default": "IBMUSER"
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Type",
+        "question_description": "Specifies the type of certificate to delete.",
+        "variable": "cert_type_survey",
+        "choices": [ "CERTAUTH", "SITE", "USER" ],
+        "required": false,
+        "default": "USER"
+        },
+        {
+        "type": "text",
+        "question_name": "Label",
+        "question_description": "The human-readable tag of the certificate to delete.",
+        "variable": "cert_label_survey",
+        "required": false,
+        "default": "TEST USER"
+        },
+        {
+        "type": "text",
+        "question_name": "Check Name",
+        "question_description": "The name of the check that will be performed for validation.",
+        "variable": "check_name_survey",
+        "required": false,
+        "default": "IBMRACF,RACF_CERTIFICATE_EXPIRATION"
+        }
+    ]
+}

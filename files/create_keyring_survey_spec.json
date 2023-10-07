@@ -1,0 +1,22 @@
+{
+    "name": "z/OS Certs - Create Keyring",
+    "description": "This playbook creates a keyring using zos_tso_command module.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Owner ID",
+        "question_description": "Specifies the user ID that will own this keyring.",
+        "variable": "owner_id_survey",
+        "required": false,
+        "default": "IBMUSER"
+        },
+        {
+        "type": "text",
+        "question_name": "Keyring",
+        "question_description": "Name of the secure container that holds digital certificates and their associated private keys to be created.",
+        "variable": "keyring_survey",
+        "required": false,
+        "default": "SharedRing1"
+        }
+    ]
+}

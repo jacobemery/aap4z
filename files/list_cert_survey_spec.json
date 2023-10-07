@@ -1,0 +1,23 @@
+{
+    "name": "z/OS Certs - List Cert",
+    "description": "This playbook displays a certificate's details using zos_tso_command module.",
+    "spec": [
+        {
+        "type": "multiplechoice",
+        "question_name": "Type",
+        "question_description": "Specifies the type of certificate to list.",
+        "variable": "cert_type_survey",
+        "choices": [ "CERTAUTH", "SITE", "USER" ],
+        "required": false,
+        "default": "SITE"
+        },
+        {
+        "type": "text",
+        "question_name": "Label",
+        "question_description": "The human-readable tag of the certificate to list.",
+        "variable": "cert_label_survey",
+        "required": false,
+        "default": "TEST SITE"
+        }
+    ]
+}

@@ -1,0 +1,313 @@
+{
+    "name": "z/OS Add User",
+    "description": "Add user with variable userid, user catalog, group, password etc.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Name",
+        "question_description": "Specifies the user name to be associated with the new user ID.",
+        "variable": "name",
+        "min": 1,
+        "max": 20,
+        "required": true
+        },
+        {
+        "type": "text",
+        "question_name": "User ID",
+        "question_description": "Specifies the user to be defined to RACF.",
+        "variable": "userid",
+        "min": 1,
+        "max": 8,
+        "required": true
+        },
+        {
+        "type": "text",
+        "question_name": "Default Group",
+        "question_description": "Specifies the name of a RACF-defined group to be used as the default group for the user. If you do not specify a group, RACF uses your current connect group as the default.",
+        "variable": "default_group",
+        "min": 1,
+        "max": 8,
+        "required": false
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Default Group Authority",
+        "question_description": "Specifies the level of group authority for the new user in the default group.",
+        "variable": "default_group_authority",
+        "choices": ["USE", "CREATE", "CONNECT", "JOIN"],
+        "required": false,
+        "default": "USE"
+        },
+        {
+        "type": "text",
+        "question_name": "Owner",
+        "question_description": "Specifies a RACF-defined user or group to be assigned as the owner of the RACF profile for the user being added.",
+        "variable": "owner",
+        "min": 1,
+        "max": 8,
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "User Catalog",
+        "question_description": "Specifies the user catalog entryname for which an alias will be defined.",
+        "variable": "user_catalog",
+        "min": 1,
+        "max": 44,
+        "required": false,
+        "default": "CATALOG.VS01.TSO"
+        },
+        {
+        "type": "text",
+        "question_name": "Master Catalog",
+        "question_description": "Specifies the user catalog entryname for which an alias will be defined.",
+        "variable": "master_catalog",
+        "min": 1,
+        "max": 44,
+        "required": false,
+        "default": "CATALOG.VS01.MASTER"
+        },
+        {
+        "type": "password",
+        "question_name": "Password",
+        "question_description": "Specifies the user's initial logon password. This password is always set expired, thus requiring the user to change the password at initial logon. Note that the password syntax rules your installation defines using SETROPTS PASSWORD do not apply to this password. Whether password or passphrase arguments are used depends on system configuration. Passphrase takes priority.",
+        "variable": "password",
+        "min": 1,
+        "max": 8,
+        "required": false
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Generate Password",
+        "question_description": "Specifies if a random password should be generated when no password is provided.",
+        "variable": "generate_password",
+        "choices": ["true", "false"],
+        "required": false,
+        "default": "true"
+        },
+        {
+        "type": "password",
+        "question_name": "Passphrase",
+        "question_description": "Specifies the user's initial password phrase. Whether password or passphrase arguments are used depends on system configuration. Passphrase takes priority. Must be enclosed in single quotation marks. The password phrase is always set expired, thus requiring the user to change it on initial use. Syntax rules for password phrases: Maximum length: (1) 100 characters, (2) Minimum length 9 characters when the encryption algorithm is KDFAES or ICHPWX11 is present and allows the new value or 14 characters, when ICHPWX11 is not present and the encryption algorithm is not KDFAES. (3) Must not contain the user ID (as sequential uppercase or sequential lowercase characters). (4) Must contain at least 2 alphabetic characters (A - Z, a - z). (5) Must contain at least 2 non-alphabetic characters (numerics, punctuation, or special characters). (6) Must not contain more than 2 consecutive characters that are identical. (7) If a single quotation mark is intended to be part of the password phrase, you must use two single quotation marks together for each single quotation mark.",
+        "variable": "passphrase",
+        "min": 1,
+        "max": 100,
+        "required": false
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Generate Passphrase",
+        "question_description": "Specifies if a random passphrase should be generated when no passphrase is provided.",
+        "variable": "generate_passphrase",
+        "choices": ["true", "false"],
+        "required": false,
+        "default": "false"
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Print Password and/or Passphrase",
+        "question_description": "Specifies if a password and/or passphrase should be printed to the console upon completion of the playbook.",
+        "variable": "print_pass",
+        "choices": ["true", "false"],
+        "required": false,
+        "default": "true"
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Send Email",
+        "question_description": "Specifies if an email should be sent containing new user credentials.",
+        "variable": "send_email",
+        "choices": ["true", "false"],
+        "required": false,
+        "default": "false"
+        },
+        {
+        "type": "text",
+        "question_name": "SMTP Server",
+        "question_description": "Specifies the SMTP server to use for sending email, if sending email is desired.",
+        "variable": "smtp_server",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "SMTP Port",
+        "question_description": "Specifies the SMTP port to use for sending email, if sending email is desired.",
+        "variable": "smtp_port",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "SMTP Username",
+        "question_description": "Specifies the username to use for sending email, if sending email is desired.",
+        "variable": "smtp_username",
+        "required": false
+        },
+        {
+        "type": "password",
+        "question_name": "SMTP Password",
+        "question_description": "Specifies the password to use for sending email, if sending email is desired.",
+        "variable": "smtp_password",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Email To",
+        "question_description": "Specifies the email address which should receive the logon credentials for the new user.",
+        "variable": "email_to",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Security Label",
+        "question_description": "Specifies the user's default security label, where security-label is an installation-defined security label name that represents an association between a particular security level and zero or more security categories. If the user does not enter a security label when entering the system, and none is assigned based on the user's port of entry, this value becomes the user's current security label. A security label corresponds to a particular security level (such as CONFIDENTIAL) with a set of zero or more security categories (such as PAYROLL or PERSONNEL).",
+        "variable": "security_label",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Security Level",
+        "question_description": "Specifies the user's security level, where security_level is an installation-defined security level name that must be a member of the SECLEVEL profile in the SECDATA class. The security_level that you specify corresponds to the number of the minimum security level that a user must have to access the resource.",
+        "variable": "security_level",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Security Categories",
+        "question_description": "Specifies one or more names of installation-defined security categories. The names you specify must be defined as members of the CATEGORY profile in a SECDATA class. Must be provided as a list.",
+        "variable": "security_categories",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "OMVS Home Directory",
+        "question_description": "Specifies the user's z/OS UNIX initial directory path name. This is the current working directory for the user's process when the user enters the TSO/E. When you define a HOME directory name to RACF, it can contain 1 - 1023 characters. The HOME path name can consist of any characters. If left blank, home directory is '/u/{{ userid | lower }}'.",
+        "variable": "omvs_home_directory",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "OMVS UID",
+        "question_description": "Specifies the user identifier. The UID is a numeric value from 0 - 2 147 483 647. When assigning a UID to a user, you should make sure that the user's default group has a GID. A user who has a UID and a current connect group that has a GID can use functions such as the TSO/E OMVS command and can access z/OS UNIX files based on the UID and GID values assigned. If left blank, AUTOUID is used.",
+        "variable": "omvs_uid",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "OMVS GID",
+        "question_description": "Specifies the group identifier. The GID is a numeric value from 0 - 2 147 483 647. If no GID specified, the default is used.",
+        "variable": "omvs_gid",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "OMVS ZFS Data Set Name",
+        "question_description": "Specifies the name of the data set to be used when creating ZFS data set. If not specified, it will default to 'OMVS.USER.{{ userid | upper }}.ZFS'.",
+        "variable": "omvs_zfs_data_set_name",
+        "required": false
+        },
+        {
+        "type": "integer",
+        "question_name": "OMVS ZFS Data Set Size",
+        "question_description": "Specifies amount of space, in cylinders, to allocate for the ZFS data set. Provided value is used for primary and secondary space. If left blank, defaults to 50 CYL.",
+        "variable": "omvs_zfs_data_set_size",
+        "choices": "",
+        "min": 1,
+        "max": 65520,
+        "required": false,
+        "default": 50
+        },
+        {
+        "type": "text",
+        "question_name": "BPXPRMxx Data Set",
+        "question_description": "Specifies the data set which contains BPXPRMxx members to modify.",
+        "variable": "bpxprm_data_set",
+        "required": false,
+        "default": "SYS1.PARMLIB"
+        },
+        {
+        "type": "text",
+        "question_name": "BPXPRMxx Member",
+        "question_description": "Specifies the last 2 characters (xx) of the BPXPRMxx member in bpxprm_data_set to which a mount command for new user's ZFS data set will be added. If not specified, no persistent mount will be made for new ZFS data set.",
+        "variable": "bpxprm_member",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "TSO Account Number",
+        "question_description": "Specifies the user's default TSO account number when logging on through the TSO/E logon panel. The account number you specify must be protected by a profile in the ACCTNUM general resource class. Account numbers can consist of any characters, and can be entered with or without single quotation marks.",
+        "variable": "tso_account_number",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "TSO Logon Procedure",
+        "question_description": "Specifies the name of the user's default logon procedure when logging on through the TSO/E logon panel. The name you specify must be 1 - 8 alphanumeric characters and begin with an alphabetic character. The name must also be defined as a profile in the TSOPROC general resource class.",
+        "variable": "tso_logon_procedure",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "DFP Data Appplication Identifier",
+        "question_description": "Specifies an 8-character DFP data application identifier.",
+        "variable": "dfp_data_application",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Default Data Class",
+        "question_description": "Specifies the default data class. The maximum length of data-class-name is 8 characters. A data class can specify some or all of the physical data set attributes associated with a new data set. During new data set allocation, data management uses the value you specify as a default unless it is preempted by a higher priority default, or overridden in some other way, for example by JCL.",
+        "variable": "data_class",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Default Management Class",
+        "question_description": "Specifies the default management class. The maximum length of management-class-name is 8 characters. A management class contains a collection of management policies that apply to data sets. Data management uses the value you specify as a default unless it is preempted by a higher priority default, or overridden in some other way, for example by JCL.",
+        "variable": "management_class",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Storage Class",
+        "question_description": "Specifies the default storage class. The maximum length of storage-class-name is 8 characters. A storage class specifies the service level (performance and availability) for data sets managed by the storage management subsystem (SMS). During new data set allocation, data management uses the value you specify as a default unless it is preempted by a higher priority default, or overridden in some other way (for example, by JCL).",
+        "variable": "storage_class",
+        "required": false
+        },
+        {
+        "type": "textarea",
+        "question_name": "Groups to Connect",
+        "question_description": "A list of groups to which the user should be added.\\nParameters:\\n  - group:     Specifies a RACF-defined group. If you omit this operand, the user is connected to or modified in your current connect group.\\n  - owner:     Specifies a RACF-defined user or group to be assigned as the owner of the connect profile.\\n  - authority: Specifies the level of authority the user is to have in the group. The valid group authority values are USE, CREATE, CONNECT, and JOIN.\\nExample:\\n  - group: \"PAYROLL\"\\n    owner: \"PAYROLL\"\\n    authority: \"USE\"\\n  - group: \"RESEARCH\"\\n    owner: \"\"\\n    authority: \"CREATE\"",
+        "variable": "groups_to_connect",
+        "required": false
+        },
+        {
+        "type": "textarea",
+        "question_name": "Resources to Permit",
+        "question_description": "A list of resources the user should be permitted to access.\\nParameters:\\n  - profile:   Specifies the name of an existing discrete or generic profile whose access list you want to modify.\\n  - authority: Specifies the access authority you want to associate with the user being created. RACF sets the access authority in the standard access list. If you specify WHEN, RACF sets the access authority in the conditional access list. The valid access authorities are NONE, EXECUTE (for DATASET, PROGRAM, or APPCTP class only), READ, UPDATE, CONTROL, and ALTER.\\n  - id:        Specifies the user IDs and group names of RACF-defined users or groups whose authority to access the resource you are giving, removing, or changing. If id is empty, default id is set to the userid of the user being created.\\nExample:\\n  - profile: \"WJE10.DEPT2.DATA\"\\n    authority: \"UPDATE\"\\n    id: \"SYSPROG\"\\n  - profile: \"RESEARCH.PROJ01.DATA\"\\n    authority: \"READ\"\\n    id: \"\"",
+        "variable": "resources_to_permit",
+        "required": false
+        },
+        {
+        "type": "textarea",
+        "question_name": "Templates to Copy",
+        "question_description": "A list of any templates on control node that should be evaluated and copied to the z/OS host.\\nParameters:\\n  - src:       Specifies the absolute or relative path to the template on the Ansible control node. Relative paths are relative to playbook runners current working directory.\\n  - dest:      Specifies the destination data set or unix path on the z/OS host. This is where the template contents are copied to after evaluation.\\nExample:\\n  - src: \"../templates/profile.j2\"\\n    dest: \"/u/{{ userid }}/.profile\"\\n  - src: \"../templates/datatemplate.j2\"\\n    dest: \"{{ userid }}.private.somedata\"",
+        "variable": "templates_to_copy",
+        "required": false
+        },
+        {
+        "type": "textarea",
+        "question_name": "Files to Copy",
+        "question_description": "A list of any files on control node that should be copied to the z/OS host.\\nParameters:\\n  - src:       Specifies the absolute or relative path to the file on the Ansible control node. Relative paths are relative to playbook runners current working directory.\\n  - dest:      Specifies the destination data set or unix path on the z/OS host. This is where the file is copied.\\nExample:\\n  - src: \"../files/profile.txt\"\\n    dest: \"/u/{{ userid }}/.profile\"\\n  - src: \"../files/datafinal.txt\"\\n    dest: \"{{ userid }}.private.mydata\"",
+        "variable": "files_to_copy",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "Target Character Set",
+        "question_description": "Specifies the character set any copied templates and files should be converted to.",
+        "variable": "target_charset",
+        "required": false,
+        "default": "IBM-1047"
+        }
+    ]
+}
