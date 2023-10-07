@@ -208,6 +208,14 @@
         state: "present"
         validate_certs: false
 
+    - name: Launch 'z/OS Ping' job.
+      tags: job, jobs, zos_ping
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS Ping"
+        validate_certs: false
+      register: zos_ping
+
     - name: Create 'z/OS Gather Facts' job template.
       tags: job_template, template, templates, zos_gather_facts
       ansible.controller.job_template:
@@ -223,6 +231,14 @@
         execution_environment: "aap4zos EE"
         state: "present"
         validate_certs: false
+
+    - name: Launch 'z/OS Gather Facts' job.
+      tags: job, jobs, zos_gather_facts
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS Gather Facts"
+        validate_certs: false
+      register: zos_gather_facts
 
     - name: Delete 'Demo Job Template' job template.
       tags: job_template, template, delete, demo_job_template
