@@ -583,6 +583,39 @@
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'zos_operator_command_survey_spec.json') }}"
 
+    - name: Create worklow job template
+      ansible.controller.workflow_job_template:
+        name: "Certificate Workflow"
+        description: "Workflow to create CA and issue certificate"
+        controller_oauthtoken: "{{ controller_token }}"
+        validate_certs: false
+        job_tags: worfklow_job_template, template, templates, certificates
+        organization: "Default"
+        workflow_nodes:
+          - identifier: "createCA"
+            unified_job_template: 
+              name: "z/OS Certs - Create Certificate Authority (CA)"
+              type: job_template
+            related:
+              success_nodes: 
+                - identifier: createCert
+              failure_nodes: []
+          - identifier: "createCert"
+            unified_job_template:
+              name: "z/OS Certs - Create USER Cert"
+              type: job_template
+            related:
+              success_nodes: 
+                - identifier: listCert
+              failure_nodes: [] 
+          - identifier: "listCert"
+            unified_job_template: 
+              name: "z/OS Certs - List Cert"
+              type: job_template
+            related:
+              success_nodes: []
+              failure_nodes: []
+
     - name: Ansible Automation Platform Controller and z/OS Host setup is complete, get automating!
       tags: setup_complete
       ansible.builtin.debug:
