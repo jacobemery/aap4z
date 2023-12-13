@@ -3,20 +3,20 @@
   hosts: automationcontroller
   become: true
   tasks:
-    - name: Install packages for cockpit.
-      tags: cockpit
+    - name: Install packages for cockpit and 3270 emulator.
+      tags: packages, cockpit, test
       ansible.builtin.package:
-        name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit']
+        name: ['zip','cockpit-storaged','cockpit-podman','cockpit-packagekit','x3270-text']
 
     - name: Check if cockpit-navigator is already installed.
-      tags: cockpit
+      tags: packages, cockpit
       ansible.builtin.command: rpm -q cockpit-navigator
       register: rpm_check
       failed_when: rpm_check.rc > 1
       changed_when: false
 
     - name: Install cockpit-navigator.
-      tags: cockpit
+      tags: packages, cockpit
       ansible.builtin.command: "rpm -i --nodeps https://github.com/45Drives/cockpit-navigator/releases/\
         download/v0.5.10/cockpit-navigator-0.5.10-1.el8.noarch.rpm"
       when: rpm_check.rc == 1
@@ -564,6 +564,16 @@
         validate_certs: false
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'zos_tso_commands_survey_spec.json') }}"
+
+    - name: Launch 'z/OS TSO Command(s)' job to change z/OS TSO password.
+      tags: job, jobs, zos_tso_commands, tso_commands, test
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS TSO Command(s)"
+        validate_certs: false
+        extra_vars:
+          zos_tso_command: "ALTUSER IBMUSER PHRASE('PASSWORD123') NOEXPIRE RESUME"
+      register: zos_tso_command_job
 
     - name: Create 'z/OS Operator Command' job template.
       tags: job_template, template, templates, zos_operator_command, operator_command
