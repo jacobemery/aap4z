@@ -80,7 +80,7 @@
         name: "ansible_zos"
         description: "Sample playbooks for automating z/OS"
         organization: "Default"
-        scm_update_on_launch: true
+        scm_update_on_launch: false
         scm_type: git
         scm_url: "https://github.com/jacobemery/ansible_zos.git"
         validate_certs: false
