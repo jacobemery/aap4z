@@ -18,6 +18,14 @@
         "variable": "cert_label_survey",
         "required": false,
         "default": "TEST SITE"
+        },
+        {
+        "type": "text",
+        "question_name": "Owner ID",
+        "question_description": "Specifies the user ID that will own this certificate.",
+        "variable": "owner_id_survey",
+        "required": false,
+        "default": ""
         }
     ]
 }
