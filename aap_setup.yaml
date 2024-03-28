@@ -67,7 +67,7 @@
         name: "z_ansible_collections_samples"
         description: "Sample playbooks for automating IBM zSystems"
         organization: "Default"
-        scm_update_on_launch: true
+        scm_update_on_launch: false
         scm_type: git
         scm_url: "https://github.com/IBM/z_ansible_collections_samples.git"
         validate_certs: false
@@ -79,7 +79,7 @@
         name: "ansible_zos"
         description: "Sample playbooks for automating z/OS"
         organization: "Default"
-        scm_update_on_launch: true
+        scm_update_on_launch: false
         scm_type: git
         scm_url: "https://github.com/jacobemery/ansible_zos.git"
         validate_certs: false
@@ -91,7 +91,7 @@
         name: "aap4zos"
         description: "Sample playbooks for automating z/OS using Ansible Automation Platform, specifically tailored for this TechZone demo."
         organization: "Default"
-        scm_update_on_launch: true
+        scm_update_on_launch: false
         scm_type: git
         scm_url: "https://github.com/jacobemery/aap4zos.git"
         validate_certs: false
