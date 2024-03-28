@@ -6,7 +6,7 @@
     - name: Install packages for cockpit.
       tags: cockpit
       ansible.builtin.package:
-        name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit']
+        name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit', 'x3270-text']
 
     - name: Install cockpit-navigator from RPM.
       tags: cockpit
