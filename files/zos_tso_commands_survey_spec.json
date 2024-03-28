@@ -1,6 +1,6 @@
 {
     "name": "z/OS TSO Command(s)",
-    "description": "Execute one or multiple TSO commands on the target z/OS system. Provide separate commands on their own lines, as shown in the default example.",
+    "description": "Execute one or multiple TSO commands on the target z/OS system.",
     "spec": [
         {
         "type": "textarea",

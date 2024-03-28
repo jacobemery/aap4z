@@ -1,6 +1,6 @@
 {
     "name": "z/OS Certs - List Cert",
-    "description": "This playbook displays a certificate's details using zos_tso_command module.",
+    "description": "This playbook displays a certificate's details.",
     "spec": [
         {
         "type": "multiplechoice",
@@ -22,10 +22,10 @@
         {
         "type": "text",
         "question_name": "Owner ID",
-        "question_description": "Specifies the user ID that will own this certificate.",
+        "question_description": "Only required if 'Type' is USER. Specifies the user ID that will own this certificate.",
         "variable": "owner_id_survey",
         "required": false,
-        "default": ""
+        "default": "IBMUSER"
         }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "name": "z/OS Add User",
+    "name": "z/OS Users - Add",
     "description": "Add user with variable userid, user catalog, group, password etc.",
     "spec": [
         {
