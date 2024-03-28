@@ -1,6 +1,6 @@
 {
-    "name": "z/OS Certs - Create USER Cert",
-    "description": "This playbook creates a USER certificate using zos_tso_command module.",
+    "name": "z/OS Certs - Create Cert",
+    "description": "This playbook creates a SITE, USER or CERTAUTH certificate. Signed by local CA or self-signed.",
     "spec": [
         {
         "type": "text",
@@ -13,18 +13,34 @@
         {
         "type": "text",
         "question_name": "Certificate Label",
-        "question_description": "A human-readable tag that allows for easy selection and management of the certificate.",
+        "question_description": "A human-readable tag that allows for easy selection and management of the certificate from RACF.",
         "variable": "cert_label_survey",
         "required": false,
-        "default": "TEST USER"
+        "default": "TESTSITE"
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Type",
+        "question_description": "Specifies the type of certificate to create.",
+        "variable": "cert_type_survey",
+        "choices": [ "CERTAUTH", "SITE", "USER" ],
+        "required": true
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Sign With",
+        "question_description": "Type of certificate to sign with, or self-sign.",
+        "variable": "sign_with_survey",
+        "required": false,
+        "choices": [ "CERTAUTH", "SITE", "Self" ],
+        "default": "Self"
         },
         {
         "type": "text",
         "question_name": "Sign Label",
-        "question_description": "The label of the Certificate Authority (CA) to sign this certificate with.",
+        "question_description": "The certificate label to sign this certificate with, leave blank if self-signed.",
         "variable": "sign_label_survey",
-        "required": false,
-        "default": "TEST CA"
+        "required": false
         },
         {
         "type": "text",
@@ -37,7 +53,7 @@
         {
         "type": "text",
         "question_name": "Common Name",
-        "question_description": "The fully qualified domain name (FQDN) for which the certificate will be issued. If left blank, it will be set to the z/OS server's FQDN.",
+        "question_description": "Identifier for the certificate. For example, with a SITE cert this would be the fully qualified domain name (FQDN), the username for a USER cert, or the organization name for a CERTAUTH. If left blank, it will be set to the z/OS server's FQDN.",
         "variable": "cn_survey",
         "required": false
         },

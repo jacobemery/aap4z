@@ -1,0 +1,62 @@
+{
+    "name": "z/OS Certs - Search and Renew",
+    "description": "This playbook searches for certificates with the details specified in the AAP survey and renews them if they're expiring soon.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Certificate Label",
+        "question_description": "The human-readable tag that allows for easy selection and management of the certificate.",
+        "variable": "cert_label_survey",
+        "required": true
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Type",
+        "question_description": "Specifies the type of certificate to be renewed.",
+        "variable": "cert_type_survey",
+        "choices": [ "CERTAUTH", "SITE", "USER" ],
+        "required": true
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Sign With",
+        "question_description": "Type of certificate to sign with, or self-sign.",
+        "variable": "sign_with_survey",
+        "required": true,
+        "choices": [ "CERTAUTH", "SITE", "Self" ],
+        "default": "Self"
+        },
+        {
+        "type": "text",
+        "question_name": "Sign Label",
+        "question_description": "The label of the CA or SITE cert to sign this certificate to be renewed with. Leave blank if Self-Signed.",
+        "variable": "sign_label_survey",
+        "required": false,
+        "default": ""
+        },
+        {
+        "type": "text",
+        "question_name": "Owner ID",
+        "question_description": "Specifies the user ID that owns this certificate.",
+        "variable": "owner_id_survey",
+        "required": true,
+        "default": "IBMUSER"
+        },
+        {
+        "type": "text",
+        "question_name": "Keyring",
+        "question_description": "Name of the secure container that holds digital certificates and their associated private keys.",
+        "variable": "keyring_survey",
+        "required": true,
+        "default": "SharedRing1"
+        },
+        {
+        "type": "text",
+        "question_name": "New Expiration Date",
+        "question_description": "The new date (in YYYY-MM-DD format) until which the digital certificate is valid.",
+        "variable": "new_expiry_date_survey",
+        "required": true,
+        "default": "2030-01-01"
+        }
+    ]
+}

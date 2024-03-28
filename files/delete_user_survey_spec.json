@@ -1,0 +1,70 @@
+{
+    "name": "z/OS Users - Delete",
+    "description": "Delete a user on z/OS and optionally remove its data sets.",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "User ID",
+        "question_description": "Specifies the user to be defined to RACF.",
+        "variable": "userid_survey",
+        "min": 1,
+        "max": 8,
+        "required": true
+        },
+        {
+        "type": "text",
+        "question_name": "New Owner",
+        "question_description": "Specifies a RACF-defined user or group that owns the group data set profiles now owned by the user to be removed. If you omit this operand when group data set profiles exist that require a new owner, RACF does not remove the user from the group. (Group data set profiles are data set profiles whose names are qualified by the group name or begin with the value supplied by an installation exit.) The new owner of the group data set profiles must have at least USE authority in the specified group. Do not specify a user who is being removed from the group as the new data set profile owner.",
+        "variable": "new_owner_survey",
+        "min": 1,
+        "max": 8,
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "OMVS Home Directory",
+        "question_description": "Specifies the user's z/OS UNIX initial directory path name. This is the current working directory for the user's process when the user enters the TSO/E. When you define a HOME directory name to RACF, it can contain 1 - 1023 characters. The HOME path name can consist of any characters. If left blank, home directory is '/u/{{ userid | lower }}'.",
+        "variable": "omvs_home_directory_survey",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "OMVS ZFS Data Set Name",
+        "question_description": "Specifies the name of the data set to be used when removing ZFS data set. If not specified, it will default to 'OMVS.USER.{{ userid | upper }}.ZFS'.",
+        "variable": "omvs_zfs_data_set_name_survey",
+        "required": false
+        },
+        {
+        "type": "text",
+        "question_name": "BPXPRMxx Data Set",
+        "question_description": "Specifies the data set which contains BPXPRMxx members to modify.",
+        "variable": "bpxprm_data_set_survey",
+        "required": false,
+        "default": "SYS1.PARMLIB"
+        },
+        {
+        "type": "text",
+        "question_name": "BPXPRMxx Member",
+        "question_description": "Specifies the last 2 characters (xx) of the BPXPRMxx member in bpxprm_data_set to which a mount command for new user's ZFS data set will be added. If not specified, no persistent mount will be removed.",
+        "variable": "bpxprm_member_survey",
+        "required": false
+        },
+        {
+        "type": "multiplechoice",
+        "question_name": "Delete User Data Sets",
+        "question_description": "Specifies if the user data sets should be deleted. This job attempts to delete any data sets with the HLQ matching the user ID of the user to be removed.",
+        "variable": "delete_user_data_sets_survey",
+        "choices": ["true", "false"],
+        "required": false,
+        "default": "true"
+        },
+        {
+        "type": "text",
+        "question_name": "Target Character Set",
+        "question_description": "Specifies the character set any copied templates and files should be converted to.",
+        "variable": "target_charset_survey",
+        "required": false,
+        "default": "IBM-1047"
+        }
+    ]
+}
