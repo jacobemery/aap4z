@@ -15,6 +15,7 @@
         validate_certs: false
         disable_gpg_check: true
         install_weak_deps: false
+        skip_broken: true
 
     - name: Assemble and stage certificate for cockpit.
       tags: cockpit
