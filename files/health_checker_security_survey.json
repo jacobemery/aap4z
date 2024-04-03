@@ -4,9 +4,9 @@
     "spec": [
         {
         "type": "text",
-        "question_name": "Owner ID",
-        "question_description": "Specifies the user ID that owns this certificate.",
-        "variable": "owner_id_survey",
+        "question_name": "User ID",
+        "question_description": "Specifies the user ID that will be granted permissions.",
+        "variable": "user_id_survey",
         "required": true,
         "default": "IBMUSER"
         }
