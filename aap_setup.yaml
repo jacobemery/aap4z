@@ -442,7 +442,7 @@
         job_template: "z/OS Certs - Health Checker Security"
         validate_certs: false
         extra_vars:
-          owner_id_survey: "IBMUSER"
+          user_id_survey: "IBMUSER"
       register: zos_job_submit_job
 
     - name: Create 'z/OS Certs - Create Keyring' job template.
