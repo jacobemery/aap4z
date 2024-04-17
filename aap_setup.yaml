@@ -651,11 +651,13 @@
               keyring_survey: "WorkflowKeyRing"
               sign_with_survey: "CERTAUTH"
               sign_label_survey: "Workflow CA"
+              cn_survey: "Workflow Cert"
             related:
               success_nodes:
                 - identifier: createExpiringCert
               failure_nodes:
                 - identifier: deleteCA
+
 # Create a certificate 30 days in the feature (within the 90 day default to trigger refresh)
           - identifier: "createExpiringCert"
             unified_job_template:
@@ -667,6 +669,7 @@
               keyring_survey: "WorkflowKeyRing"
               sign_with_survey: "CERTAUTH"
               sign_label_survey: "Workflow CA"
+              cn_survey: "Workflow Expiring Cert"
               expiry_date_survey: "{{ '%Y-%m-%d'| strftime((ansible_date_time.epoch|int) + (60*60*24*30)) }}"
             related:
               success_nodes:
