@@ -572,16 +572,6 @@
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'zos_tso_commands_survey_spec.json') }}"
 
-    - name: Launch 'z/OS TSO Command(s)' job to change z/OS TSO password.
-      tags: job, jobs, zos_tso_commands, tso_commands, test
-      ansible.controller.job_launch:
-        controller_oauthtoken: "{{ controller_token }}"
-        job_template: "z/OS TSO Command(s)"
-        validate_certs: false
-        extra_vars:
-          zos_tso_command: "ALTUSER IBMUSER PHRASE('PASSWORD123') NOEXPIRE RESUME"
-      register: zos_tso_command_job
-
     - name: Create 'z/OS Operator Command' job template.
       tags: job_template, template, templates, zos_operator_command, operator_command
       ansible.controller.job_template:
