@@ -3,6 +3,24 @@
   hosts: automationcontroller
   become: true
   tasks:
+    - name: Print zos_certificate variable for testing.
+      tags: cert
+      ansible.builtin.debug:
+        msg: "{{ zos_certificate_json }}"
+
+    - name: Stage zos_certificate.json file with content from Terraform values.
+      tags: cert
+      ansible.builtin.blockinfile:
+        path: /root/certificates/zos_certificate.json
+        create: true
+        block: "{{ zos_certificate_json }}"
+        mode: '600'
+        owner: root
+        group: root
+        marker: ""
+        marker_begin: ""
+        marker_end: ""
+
     - name: Install packages for cockpit.
       tags: cockpit
       ansible.builtin.package:
