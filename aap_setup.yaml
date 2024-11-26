@@ -3,23 +3,6 @@
   hosts: automationcontroller
   become: true
   tasks:
-    - name: Print zos_certificate variable for testing.
-      tags: cert
-      ansible.builtin.debug:
-        msg: "{{ zos_certificate_json }}"
-
-    - name: Stage zos_certificate.json file with content from Terraform values.
-      tags: cert
-      ansible.builtin.blockinfile:
-        path: /root/certificates/zos_certificate.json
-        create: true
-        block: "{{ zos_certificate_json }}"
-        mode: '600'
-        owner: root
-        group: root
-        marker: ""
-        marker_begin: ""
-        marker_end: ""
 
     - name: Install packages for cockpit.
       tags: cockpit
@@ -516,6 +499,32 @@
         validate_certs: false
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'create_cert_survey_spec.json') }}"
+
+    - name: Create 'z/OS Certs - Add CA Cert' job template.
+      tags: job_template, template, templates, zos_add_cert, add_cert
+      ansible.controller.job_template:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "z/OS Certs - Add CA Cert"
+        description: "This playbook adds a CA certificate to z/OS. Used during provisioning."
+        job_type: "run"
+        organization: "Default"
+        inventory: "AAP z/OS"
+        project: "aap4zos"
+        playbook: "zos_concepts/certificate_management/add_ca_cert.yml"
+        credentials: "z/OS Host SSH Key"
+        execution_environment: "aap4zos EE"
+        state: "present"
+        validate_certs: false
+
+    - name: Launch 'z/OS Certs - Add CA Cert' job to add the certificate authority to RACF.
+      tags: job, jobs, zos_add_cert, add_cert
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS Certs - Add CA Cert"
+        validate_certs: false
+        extra_vars:
+          zos_ca_cert: "{{ zos_certificate_json.certificate }}"
+      register: zos_add_cert_job
 
     - name: Create 'z/OS Certs - Delete Cert' job template.
       tags: job_template, template, templates, zos_delete_cert, delete_cert
