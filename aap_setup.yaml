@@ -513,6 +513,7 @@
         playbook: "zos_concepts/certificate_management/add_ca_cert.yml"
         credentials: "z/OS Host SSH Key"
         execution_environment: "aap4zos EE"
+        ask_extra_vars: true
         state: "present"
         validate_certs: false
 
