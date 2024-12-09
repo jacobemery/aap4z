@@ -525,6 +525,7 @@
         validate_certs: false
         extra_vars:
           zos_ca_cert: "{{ zos_intermediate }}"
+          zos_cert: "{{ zos_certificate }}"
       register: zos_add_cert_job
 
     - name: Create 'z/OS Certs - Delete Cert' job template.
