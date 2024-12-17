@@ -648,6 +648,239 @@
         survey_enabled: true
         survey_spec: "{{ lookup('file', 'zos_operator_command_survey_spec.json') }}"
 
+- name: Export workflow
+  hosts: ansible_guest
+  gather_facts: true
+  tasks:
+    - name: Instal awxkit
+      ansible.builtin.pip:
+        name: awxkit
+    - name: Create OAuth Token for AAP admin tasks.
+      tags: always, token
+      ansible.controller.token:
+        description: "Admin OAuth Token for Ansible Controller setup."
+        scope: write
+        state: present
+        controller_username: admin
+        controller_password: "{{ ansible_become_password }}"
+        validate_certs: false
+      when: controller_token is undefined
+      register: token
+
+    - name: Create create cert worklow job template
+      ansible.controller.workflow_job_template:
+        name: "Certificate Workflow"
+        description: "Workflow to create CA and issue certificate"
+        controller_oauthtoken: "{{ controller_token }}"
+        validate_certs: false
+        job_tags: worfklow_job_template, template, templates, certificates
+        organization: "Default"
+        workflow_nodes:
+          - identifier: "createCA"
+            unified_job_template:
+              name: "z/OS Certs - Create Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: CERTAUTH
+              cert_label_survey: "Workflow CA"
+              keyring_survey: "WorkflowKeyRing"
+            related:
+              success_nodes:
+                - identifier: createCert
+              failure_nodes: []
+
+          - identifier: "createCert"
+            unified_job_template:
+              name: "z/OS Certs - Create Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Cert"
+              keyring_survey: "WorkflowKeyRing"
+              sign_with_survey: "CERTAUTH"
+              sign_label_survey: "Workflow CA"
+              cn_survey: "Workflow Cert"
+            related:
+              success_nodes:
+                - identifier: createExpiringCert
+              failure_nodes:
+                - identifier: deleteCA
+
+# Create a certificate 30 days in the feature (within the 90 day default to trigger refresh)
+          - identifier: "createExpiringCert"
+            unified_job_template:
+              name: "z/OS Certs - Create Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Expiring Cert"
+              keyring_survey: "WorkflowKeyRing"
+              sign_with_survey: "CERTAUTH"
+              sign_label_survey: "Workflow CA"
+              cn_survey: "Workflow Expiring Cert"
+              expiry_date_survey: "{{ '%Y-%m-%d'| strftime((ansible_date_time.epoch|int) + (60*60*24*30)) }}"
+            related:
+              success_nodes:
+                - identifier: listCA
+              failure_nodes:
+                - identifier: deleteCert
+
+          - identifier: "listCA"
+            unified_job_template:
+              name: "z/OS Certs - List Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: CERTAUTH
+              cert_label_survey: "Workflow CA"
+            related:
+              success_nodes: 
+                - identifier: listCert
+              failure_nodes: []
+
+          - identifier: "listCert"
+            unified_job_template:
+              name: "z/OS Certs - List Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Cert"
+            related:
+              success_nodes:
+                - identifier: listExpiringCert
+              failure_nodes: []
+
+          - identifier: "listExpiringCert"
+            unified_job_template:
+              name: "z/OS Certs - List Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Expiring Cert"
+            related:
+              success_nodes: []
+              failure_nodes: []
+
+          - identifier: "deleteCert"
+            unified_job_template:
+              name: "z/OS Certs - Delete Cert"
+              type: job_template
+            extra_data:
+              owner_id_survey: IBMUSER
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Cert"
+            related:
+              success_nodes:
+                - identifier: deleteCA
+              failure_nodes:
+                - identifier: listCA
+
+          - identifier: "deleteCA"
+            unified_job_template:
+              name: "z/OS Certs - Delete Cert"
+              type: job_template
+            extra_data:
+              owner_id_survey: IBMUSER
+              cert_type_survey: CERTAUTH
+              cert_label_survey: "Workflow CA"
+            related:
+              success_nodes:
+                - identifier: deleteKeyRing
+              failure_nodes: []
+
+          - identifier: "deleteKeyRing"
+            unified_job_template:
+              name: "z/OS Certs - Delete Keyring"
+              type: job_template
+            extra_data:
+              owner_id_survey: IBMUSER
+              keyring_survey: "WorkflowKeyRing"
+            related:
+              success_nodes: []
+              failure_nodes: []
+
+    - name: Create delete cert worklow job template
+      ansible.controller.workflow_job_template:
+        name: "Delete Certificate Workflow"
+        description: "Workflow to delete CA and its issued certificate"
+        controller_oauthtoken: "{{ controller_token }}"
+        validate_certs: false
+        job_tags: worfklow_job_template, template, templates, certificates
+        organization: "Default"
+        workflow_nodes:
+          - identifier: "deleteExpiringCert"
+            unified_job_template:
+              name: "z/OS Certs - Delete Cert"
+              type: job_template
+            extra_data:
+              owner_id_survey: IBMUSER
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Expiring Cert"
+            related:
+              success_nodes:
+                - identifier: deleteCert
+              failure_nodes:
+                - identifier: listCert
+
+          - identifier: "deleteCert"
+            unified_job_template:
+              name: "z/OS Certs - Delete Cert"
+              type: job_template
+            extra_data:
+              owner_id_survey: IBMUSER
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Cert"
+            related:
+              success_nodes:
+                - identifier: deleteCA
+              failure_nodes:
+                - identifier: listCA
+
+          - identifier: "deleteCA"
+            unified_job_template:
+              name: "z/OS Certs - Delete Cert"
+              type: job_template
+            extra_data:
+              owner_id_survey: IBMUSER
+              cert_type_survey: CERTAUTH
+              cert_label_survey: "Workflow CA"
+            related:
+              success_nodes:
+                - identifier: deleteKeyRing
+
+          - identifier: "deleteKeyRing"
+            unified_job_template:
+              name: "z/OS Certs - Delete Keyring"
+              type: job_template
+            extra_data:
+              owner_id_survey: IBMUSER
+              keyring_survey: "WorkflowKeyRing"
+            related:
+              success_nodes: []
+              failure_nodes: []
+
+          - identifier: "listCA"
+            unified_job_template:
+              name: "z/OS Certs - List Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: CERTAUTH
+              cert_label_survey: "Workflow CA"
+            related:
+              success_nodes: []
+              failure_nodes: []
+
+          - identifier: "listCert"
+            unified_job_template:
+              name: "z/OS Certs - List Cert"
+              type: job_template
+            extra_data:
+              cert_type_survey: SITE
+              cert_label_survey: "Workflow Cert"
+            related:
+              success_nodes:
+                - identifier: listCA
+              failure_nodes: []
+
     - name: Ansible Automation Platform Controller and z/OS Host setup is complete, get automating!
       tags: setup_complete
       ansible.builtin.debug:
