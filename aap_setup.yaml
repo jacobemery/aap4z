@@ -248,6 +248,34 @@
         state: "absent"
         validate_certs: false
 
+    - name: Create 'z/OS Certs - Stage PKCS#12' job template.
+      tags: job_template, template, templates, stage_pkcs
+      ansible.controller.job_template:
+        controller_oauthtoken: "{{ controller_token }}"
+        name: "z/OS Certs - Stage PKCS#12"
+        description: "This playbook creates a PKCS#12 package from z/OS cert and private key. Used during provisioning."
+        job_type: "run"
+        organization: "Default"
+        inventory: "AAP z/OS"
+        project: "aap4zos"
+        playbook: "zos_concepts/certificate_management/stage_pkcs12.yml"
+        credentials: "Demo Credential"
+        execution_environment: "Default execution environment"
+        ask_extra_vars: true
+        state: "present"
+        validate_certs: false
+
+    - name: Launch 'z/OS Certs - Stage PKCS#12' job to create a PCKS#12 package on the controller for later use.
+      tags: job, jobs, stage_pkcs
+      ansible.controller.job_launch:
+        controller_oauthtoken: "{{ controller_token }}"
+        job_template: "z/OS Certs - Stage PKCS#12"
+        validate_certs: false
+        extra_vars:
+          zos_cert: "{{ zos_certificate }}"
+          zos_cert_key: "{{ zos_private_key }}"
+      register: stage_pkcs_job
+
     - name: Create 'z/OS Job Submit' job template.
       tags: job_template, template, zos_job_submit, job_submit
       ansible.controller.job_template:
