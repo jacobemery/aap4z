@@ -1,3 +1,4 @@
 manifest.zip
 .vscode/
 *.code-workspace
+*__pycache__*
