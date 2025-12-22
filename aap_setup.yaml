@@ -56,11 +56,11 @@
         dest: /tmp/manifest.zip
         mode: '0644'
 
-    - name: Attach the AAP license using manifest file.
-      ansible.controller.license:
-        manifest: /tmp/manifest.zip
-        controller_oauthtoken: "{{ controller_token }}"
-        validate_certs: false
+#    - name: Attach the AAP license using manifest file.
+#      ansible.controller.license:
+#        manifest: /tmp/manifest.zip
+#        controller_oauthtoken: "{{ controller_token }}"
+#        validate_certs: false
 
     - name: Create 'z_ansible_collections_samples' project.
       tags: project, projects
