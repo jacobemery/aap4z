@@ -50,11 +50,11 @@
       when: controller_token is undefined
       register: token
 
-    - name: Copy manifest.zip file to Controller.
-      ansible.builtin.copy:
-        src: "{{ manifest_file }}"
-        dest: /tmp/manifest.zip
-        mode: '0644'
+#    - name: Copy manifest.zip file to Controller.
+#      ansible.builtin.copy:
+#        src: "{{ manifest_file }}"
+#        dest: /tmp/manifest.zip
+#        mode: '0644'
 
 #    - name: Attach the AAP license using manifest file.
 #      ansible.controller.license:
