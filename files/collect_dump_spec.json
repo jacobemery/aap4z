@@ -1,0 +1,30 @@
+{
+    "name": "Collect dump",
+    "description": "Collect dump on a z/OS address space",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "Please enter the title of the dump",
+        "question_description": "unique title for the z/OS dump",
+        "variable": "dump_title",
+        "required": true,
+        "default": ""
+        },
+        {
+        "type": "text",
+        "question_name": "Please enter the SDATA parameters",
+        "question_description": "SDATA parameters",
+        "variable": "sdata",
+        "required": true,
+        "default": ""
+        },
+        {
+        "type": "text",
+        "question_name": "Please enter the name of the dataset to copy the dump into",
+        "question_description": "dataset name to copy dump to",
+        "variable": "copy_ds_name",
+        "required": true,
+        "default": ""
+        }
+    ]
+}

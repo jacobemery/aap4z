@@ -1,0 +1,38 @@
+{
+    "name": "Send dump",
+    "description": "Send dump to support case",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "case number",
+        "question_description": "case number for case to transfer dump file to",
+        "variable": "case_num",
+        "required": true,
+        "default": ""
+        },
+        {
+        "type": "text",
+        "question_name": "dataset to send",
+        "question_description": "Specifies the name of the dump dataset to send",
+        "variable": "ds_to_send",
+        "required": true,
+        "default": ""
+        },
+        {
+        "type": "text",
+        "question_name": "Transfer ID",
+        "question_description": "Specifies the transfer ID to use for transfer",
+        "variable": "transfer_id",
+        "required": true,
+        "default": ""
+        },
+        {
+        "type": "text",
+        "question_name": "Transfer password",
+        "question_description": "Specifies the transfer password to use for transfer",
+        "variable": "transfer_pw",
+        "required": true,
+        "default": ""
+        }
+    ]
+}

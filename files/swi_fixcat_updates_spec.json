@@ -1,0 +1,14 @@
+{
+    "name": "SWI - Query Missing Fixcat Updates",
+    "description": "A playbook to query SW instance for missing fixcat updates",
+    "spec": [
+        {
+        "type": "text",
+        "question_name": "software instance",
+        "question_description": "Specifies the name of the SWI defined to z/OSMF",
+        "variable": "swi_name_survey",
+        "required": true,
+        "default": ""
+        }
+    ]
+}
