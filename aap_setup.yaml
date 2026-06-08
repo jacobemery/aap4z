@@ -1,5 +1,5 @@
 - name: Setup Ansible Automation Platform Controller server.
-  hosts: localhost
+  hosts: automationcontroller
   become: false
   gather_facts: false
   tasks:
