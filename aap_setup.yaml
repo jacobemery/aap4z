@@ -45,7 +45,7 @@
         scope: write
         state: present
         controller_username: admin
-        controller_password: "{{ ansible_become_password }}"
+        controller_password: "{{ vault_controller_passwd }}"
         validate_certs: false
       when: controller_token is undefined
       register: token
@@ -724,7 +724,7 @@
         name: "zOS Passphrase"
         credential_type: "zOS Passphrase Credential"
         organization: Default
-        description: "User’s zOS passphrase"
+        description: "User's zOS passphrase"
         inputs:
           username: 'testuser'
           password: "{{ zmf_password }}"
