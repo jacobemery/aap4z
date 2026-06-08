@@ -1,37 +1,38 @@
 - name: Setup Ansible Automation Platform Controller server.
   hosts: localhost
-  become: true
+  become: false
+  gather_facts: false
   tasks:
 
-    - name: Install packages for cockpit.
-      tags: cockpit
-      ansible.builtin.package:
-        name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit', 'x3270-text']
+    # - name: Install packages for cockpit.
+    #   tags: cockpit
+    #   ansible.builtin.package:
+    #     name: ['zip', 'cockpit-storaged', 'cockpit-podman', 'cockpit-packagekit', 'x3270-text']
 
-    - name: Install cockpit-navigator from RPM.
-      tags: cockpit
-      ansible.builtin.dnf:
-        name: "https://github.com/45Drives/cockpit-navigator/releases/download/v0.5.10/cockpit-navigator-0.5.10-1.el8.noarch.rpm"
-        validate_certs: false
-        disable_gpg_check: true
-        install_weak_deps: false
-        skip_broken: true
+    # - name: Install cockpit-navigator from RPM.
+    #   tags: cockpit
+    #   ansible.builtin.dnf:
+    #     name: "https://github.com/45Drives/cockpit-navigator/releases/download/v0.5.10/cockpit-navigator-0.5.10-1.el8.noarch.rpm"
+    #     validate_certs: false
+    #     disable_gpg_check: true
+    #     install_weak_deps: false
+    #     skip_broken: true
 
-    - name: Assemble and stage certificate for cockpit.
-      tags: cockpit
-      ansible.builtin.assemble:
-        src: /root/certificates
-        dest: /etc/cockpit/ws-certs.d/cockpit.cert
-        owner: root
-        group: root
-        mode: '0600'
+    # - name: Assemble and stage certificate for cockpit.
+    #   tags: cockpit
+    #   ansible.builtin.assemble:
+    #     src: /root/certificates
+    #     dest: /etc/cockpit/ws-certs.d/cockpit.cert
+    #     owner: root
+    #     group: root
+    #     mode: '0600'
 
-    - name: Enable cockpit socket.
-      tags: cockpit
-      ansible.builtin.systemd_service:
-        name: cockpit.socket
-        enabled: true
-        state: started
+    # - name: Enable cockpit socket.
+    #   tags: cockpit
+    #   ansible.builtin.systemd_service:
+    #     name: cockpit.socket
+    #     enabled: true
+    #     state: started
 
     - name: Ensure AAP on Z repo is enabled.
       community.general.rhsm_repository:
@@ -107,36 +108,36 @@
         state: present
         validate_certs: false
 
-    - name: Fetch private key from Controller.
-      tags: inventory, hosts, credential, credentials, zos_host
-      ansible.builtin.slurp:
-        src: /root/.ssh/id_rsa
-      register: ssh_key
+    # - name: Fetch private key from Controller.
+    #   tags: inventory, hosts, credential, credentials, zos_host
+    #   ansible.builtin.slurp:
+    #     src: /root/.ssh/id_rsa
+    #   register: ssh_key
 
-    - name: Create Machine credential for zos_host's SSH key.
-      tags: inventory, hosts, credential, credentials, zos_host
-      ansible.controller.credential:
-        controller_oauthtoken: "{{ controller_token }}"
-        name: "z/OS Host SSH Key"
-        credential_type: Machine
-        organization: Default
-        description: "Private SSH key on Controller for connecting to z/OS host."
-        inputs:
-          ssh_key_data: "{{ ssh_key['content'] | b64decode }}"
-        validate_certs: false
+    # - name: Create Machine credential for zos_host's SSH key.
+    #   tags: inventory, hosts, credential, credentials, zos_host
+    #   ansible.controller.credential:
+    #     controller_oauthtoken: "{{ controller_token }}"
+    #     name: "z/OS Host SSH Key"
+    #     credential_type: Machine
+    #     organization: Default
+    #     description: "Private SSH key on Controller for connecting to z/OS host."
+    #     inputs:
+    #       ssh_key_data: "{{ ssh_key['content'] | b64decode }}"
+    #     validate_certs: false
 
-    - name: Create Vault credential for automationcontroller's sudo password / AAP admin password.
-      tags: inventory, hosts, credential, credentials, automationcontroller
-      ansible.controller.credential:
-        controller_oauthtoken: "{{ controller_token }}"
-        name: AAP Controller Password
-        credential_type: Vault
-        organization: Default
-        description: "Credential for the AAP admin / automationcontroller's SSH password."
-        validate_certs: false
-        inputs:
-          vault_password: "{{ vault_controller_password }}"
-          vault_id: 'vault_controller_password'
+    # - name: Create Vault credential for automationcontroller's sudo password / AAP admin password.
+    #   tags: inventory, hosts, credential, credentials, automationcontroller
+    #   ansible.controller.credential:
+    #     controller_oauthtoken: "{{ controller_token }}"
+    #     name: AAP Controller Password
+    #     credential_type: Vault
+    #     organization: Default
+    #     description: "Credential for the AAP admin / automationcontroller's SSH password."
+    #     validate_certs: false
+    #     inputs:
+    #       vault_password: "{{ vault_controller_password }}"
+    #       vault_id: 'vault_controller_password'
 
     - name: Add zos_host to 'AAP z/OS' inventory.
       tags: inventory, hosts, zos_host
