@@ -34,9 +34,9 @@
     #     enabled: true
     #     state: started
 
-    - name: Ensure AAP on Z repo is enabled.
-      community.general.rhsm_repository:
-        name: ansible-automation-platform-2.4-for-rhel-9-s390x-rpms
+    # - name: Ensure AAP on Z repo is enabled.
+    #   community.general.rhsm_repository:
+    #     name: ansible-automation-platform-2.4-for-rhel-9-s390x-rpms
 
     - name: Create OAuth Token for AAP admin tasks.
       tags: always, token
